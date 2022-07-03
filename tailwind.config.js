@@ -25,7 +25,7 @@ module.exports = {
           "-webkit-background-clip": "text",
           "-webkit-text-fill-color": "transparent",
         },
-        "branded-border": {
+        ".branded-border": {
           "border-image":
             "linear-gradient(to right, rgba(50,97,124,1), rgba(59,115,147,1))",
         },

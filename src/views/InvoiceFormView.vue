@@ -59,7 +59,7 @@ export default {
         <button
           id="invoice-save"
           type="submit"
-          class="btn text-white branded-bg branded-border"
+          class="btn text-white branded-bg"
         >
           Save
         </button>
