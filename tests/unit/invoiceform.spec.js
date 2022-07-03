@@ -13,33 +13,36 @@ function factory() {
 describe("New invoice form", () => {
   it("Invoice fields are exist", () => {
     const wrapper = factory();
-    expect(wrapper.find("[name=name]").exists()).toBe(true);
-    expect(wrapper.find("[name=date]").exists()).toBe(true);
-  });
-
-  it("New contract fieldset is shown by default", () => {
-    const wrapper = factory();
-    expect(wrapper.find(".new-contract-fieldset").exists()).toBe(true);
-    expect(wrapper.find(".current-contract-fieldset").exists()).toBe(false);
+    const invoiceFieldSet = wrapper.find("#invoice-fields");
+    expect(invoiceFieldSet.exists()).toBe(true);
+    expect(invoiceFieldSet.find("[name=invoice-name]").exists()).toBe(true);
+    expect(invoiceFieldSet.find("[name=invoice-date]").exists()).toBe(true);
   });
 
   it("New contract fieldset fields are exists", () => {
     const wrapper = factory();
-    expect(wrapper.find("[name=contractName]").exists()).toBe(true);
-    expect(wrapper.find("[name=contractDate]").exists()).toBe(true);
-    expect(wrapper.find("[name=contractClient]").exists()).toBe(true);
-    expect(wrapper.find("[name=contractContractor]").exists()).toBe(true);
+    const contractFields = wrapper.find("#contract-fields");
+    expect(contractFields.exists()).toBe(true);
+    expect(contractFields.find("[name=contract-name]").exists()).toBe(true);
+    expect(contractFields.find("[name=contract-date]").exists()).toBe(true);
+    expect(contractFields.find("[name=contract-client]").exists()).toBe(true);
+    expect(contractFields.find("[name=contract-contractor]").exists()).toBe(
+      true
+    );
   });
 
   it("Goods and services section is empty", () => {
     const wrapper = factory();
-    expect(wrapper.find(".services").exists()).toBe(true);
-    expect(wrapper.find(".services__add").exists()).toBe(true);
+    const invoiceServices = wrapper.find("#invoice-services");
+    expect(invoiceServices.exists()).toBe(true);
+    expect(invoiceServices.find("button#add-service").exists()).toBe(true);
   });
 
   it("Invoice for buttons are exists", () => {
     const wrapper = factory();
-    expect(wrapper.find(".invoice-form__cancel").exists()).toBe(true);
-    expect(wrapper.find(".invoice-form__save").exists()).toBe(true);
+    const invoiceButtons = wrapper.find("#invoice-buttons");
+    expect(invoiceButtons.exists()).toBe(true);
+    expect(wrapper.find("button#invoice-cancel").exists()).toBe(true);
+    expect(wrapper.find("button#invoice-save").exists()).toBe(true);
   });
 });
