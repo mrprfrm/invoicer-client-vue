@@ -18,7 +18,7 @@ export default {
       :id="name"
       :name="name"
       type="date"
-      class="text-sm py-3 px-4 border rounded-md"
+      class="text-sm py-3 px-4 border rounded-md focus:ring-brand focus:border-brand"
     />
   </div>
 </template>

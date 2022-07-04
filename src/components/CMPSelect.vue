@@ -17,7 +17,7 @@ export default {
     <select
       :name="name"
       :id="name"
-      class="text-sm py-3 px-4 border rounded-md w-full"
+      class="text-sm py-3 px-4 border rounded-md w-full focus:ring-brand focus:border-brand"
     >
       <option value="">Select an item</option>
     </select>

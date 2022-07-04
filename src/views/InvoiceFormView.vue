@@ -21,7 +21,7 @@ export default {
       <div class="flex flex-row items-center justify-between">
         <h2 class="text-xl font-bold">New contract</h2>
         <button
-          class="p-1 text-base font-bold rounded-md focus:ring-2 ring-blue-600 outline-none branded-text"
+          class="p-1 text-base font-bold rounded-md focus:ring-2 ring-blue-600 outline-none branded-text focus:ring-brand"
         >
           Choose contract
         </button>
@@ -42,7 +42,7 @@ export default {
             Do you want to
             <button
               id="add-service"
-              class="p-1 ml-1 text-base font-bold rounded-md focus:ring-2 ring-blue-600 outline-none branded-text"
+              class="p-1 ml-1 text-base font-bold rounded-md focus:ring-2 ring-blue-600 outline-none branded-text focus:ring-brand"
             >
               Add new item
             </button>
@@ -55,11 +55,13 @@ export default {
         id="invoice-buttons"
         class="flex flex-row items-center justify-end space-x-2"
       >
-        <button id="invoice-cancel" type="button" class="btn">Cancel</button>
+        <button id="invoice-cancel" type="button" class="btn focus:ring-brand">
+          Cancel
+        </button>
         <button
           id="invoice-save"
           type="submit"
-          class="btn text-white branded-bg"
+          class="btn text-white branded-bg focus:ring-brand"
         >
           Save
         </button>
