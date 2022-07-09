@@ -1,7 +1,25 @@
 <script setup>
-import { ref, defineProps } from "vue";
+import { ref, defineProps, defineEmits, computed } from "vue";
 
-const days = Array.from({ length: 31 }, (_, i) => `0${i + 1}`.slice(-2));
+const props = defineProps({
+  name: String,
+  label: String,
+  modelValue: String,
+  required: {
+    type: Boolean,
+    default: true,
+  },
+  yearsNumber: {
+    type: Number,
+    default: 30,
+  },
+});
+
+const emit = defineEmits(["update:modelValue"]);
+
+const currentYear = new Date().getFullYear();
+
+// const days = Array.from({ length: 31 }, (_, i) => `0${i + 1}`.slice(-2));
 
 const months = [
   "January",
@@ -18,18 +36,50 @@ const months = [
   "December",
 ];
 
-const currentYear = new Date().getFullYear();
-const years = Array.from(
-  { length: currentYear - 1990 },
-  (_, i) => currentYear - i
-);
+// Reactive data
 
 const input = ref(null);
+const isBlurable = ref(true);
+const isFocused = ref(false);
 
-const props = defineProps({
-  name: String,
-  label: String,
+const day = computed({
+  get() {
+    return props.modelValue ? props.modelValue.getDay() : null;
+  },
+  set() {
+    emit("update:modelValue", "1111-11-11");
+  },
 });
+
+const month = computed({
+  get() {
+    return props.modelValue ? props.modelValue.getMonth() : null;
+  },
+});
+
+const year = computed({
+  get() {
+    return props.modelValue ? props.modelValue.getFullYear() : null;
+  },
+});
+
+function blurInput() {
+  if (!isBlurable.value) {
+    return;
+  }
+  // TODO If required validate input has not empty
+  emit("update:modelValue", input.value.value);
+  isFocused.value = false;
+}
+
+function disableInputBlur() {
+  isBlurable.value = false;
+}
+
+function enableInputBlur() {
+  isBlurable.value = true;
+  input.value.focus();
+}
 </script>
 
 <template>
@@ -43,16 +93,22 @@ const props = defineProps({
     <input
       :id="name"
       :name="name"
+      :value="modelValue"
+      :required="required"
+      @focus="isFocused = true"
+      @blur="blurInput"
       type="date"
       ref="input"
       class="text-sm py-3 px-4 border rounded-md focus:ring-brand focus:border-brand"
     />
 
     <div
-      class="datepicker z-20 absolute top-full flex mt-3 bg-white border border-gray-500 rounded-md"
-      @click="input.focus()"
+      v-show="isFocused"
+      @mousedown="disableInputBlur"
+      @mouseup="enableInputBlur"
+      class="z-20 absolute top-full flex mt-3 bg-white border border-gray-500 rounded-md"
     >
-      <div class="datepicker__days">
+      <div class="datepicker-days">
         <small
           class="absolute -mt-2 text-xs px-0.5 ml-2.5 bg-white text-gray-500"
         >
@@ -61,20 +117,22 @@ const props = defineProps({
         <div class="pt-5 pb-2">
           <div class="max-h-32 overflow-scroll">
             <button
-              v-for="(d, index) in days"
-              @click="day = index + 1"
-              :key="index"
+              v-for="i in 31"
+              :key="name + '-day-' + i"
+              @mousedown="disableInputBlur"
+              @mouseup="enableInputBlur"
+              @click="day = i"
               type="button"
               tabindex="-1"
               class="block px-4 py-2"
             >
-              {{ d }}
+              {{ `0${i}`.slice(-2) }}
             </button>
           </div>
         </div>
       </div>
 
-      <div class="datepicker__months">
+      <div class="datepicker-months">
         <small
           class="absolute -mt-2 text-xs px-0.5 ml-2.5 bg-white text-gray-500"
         >
@@ -83,20 +141,20 @@ const props = defineProps({
         <div class="pt-5 pb-2">
           <div class="max-h-32 overflow-scroll">
             <button
-              v-for="(month, index) in months"
-              :data-value="index + 1"
-              :key="index"
+              v-for="(monthText, index) in months"
+              :key="name + '-month-' + index"
+              @click="month = index + 1"
               type="button"
               tabindex="-1"
               class="block px-4 py-2"
             >
-              {{ month }}
+              {{ monthText }}
             </button>
           </div>
         </div>
       </div>
 
-      <div class="datepicker__years">
+      <div class="datepicker-years">
         <small
           class="absolute -mt-2 text-xs px-0.5 ml-2.5 bg-white text-gray-500"
         >
@@ -106,13 +164,14 @@ const props = defineProps({
         <div class="pt-5 pb-2">
           <div class="max-h-32 overflow-scroll">
             <button
-              v-for="(year, index) in years"
-              :key="index"
+              v-for="i in yearsNumber"
+              :key="name + '-year-' + i"
+              @click="year = currentYear - i + 1"
               type="button"
               tabindex="-1"
               class="block px-4 py-2"
             >
-              {{ year }}
+              {{ currentYear - i + 1 }}
             </button>
           </div>
         </div>

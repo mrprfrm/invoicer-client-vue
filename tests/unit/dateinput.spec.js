@@ -33,7 +33,7 @@ describe("Date input tests", () => {
     await wrapper
       .find(".datepicker")
       .find(".datepicker__days")
-      .findAll("buttons")[0]
+      .findAll("button")[0]
       .trigger("click");
     expect(wrapper.find("input").element.value).toBe("01.mm.yyyy");
   });

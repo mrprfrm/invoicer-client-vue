@@ -1,12 +1,10 @@
-<script>
+<script setup>
 import TextInput from "../components/TextInput.vue";
 import DateInput from "../components/DateInput.vue";
 import CMPSelect from "../components/CMPSelect.vue";
+import { ref } from "vue";
 
-export default {
-  components: { TextInput, DateInput, CMPSelect },
-  setup() {},
-};
+const date = ref("");
 </script>
 
 <template>
@@ -15,7 +13,7 @@ export default {
       <h1 class="text-xl font-bold mb-6">Invoice</h1>
       <fieldset id="invoice-fields" class="space-y-4">
         <TextInput name="invoice-name" label="Name"></TextInput>
-        <DateInput name="invoice-date" label="Date"></DateInput>
+        <DateInput name="invoice-date" label="Date" v-model="date"></DateInput>
       </fieldset>
 
       <div class="flex flex-row items-center justify-between">
@@ -29,7 +27,7 @@ export default {
 
       <fieldset id="contract-fields" class="space-y-4">
         <TextInput name="contract-name" label="Name"></TextInput>
-        <DateInput name="contract-date" label="Date"></DateInput>
+        <DateInput name="contract-date" label="Date" v-model="date"></DateInput>
         <CMPSelect name="contract-client" label="Client"></CMPSelect>
         <CMPSelect name="contract-contractor" label="Contractor"></CMPSelect>
       </fieldset>
