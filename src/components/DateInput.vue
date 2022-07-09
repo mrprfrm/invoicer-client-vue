@@ -60,14 +60,16 @@ const props = defineProps({
         </small>
         <div class="pt-5 pb-2">
           <div class="max-h-32 overflow-scroll">
-            <div
+            <button
               v-for="(d, index) in days"
-              :key="name - 'day' - index"
               @click="day = index + 1"
-              class="px-4 py-2"
+              :key="index"
+              type="button"
+              tabindex="-1"
+              class="block px-4 py-2"
             >
               {{ d }}
-            </div>
+            </button>
           </div>
         </div>
       </div>
@@ -80,14 +82,16 @@ const props = defineProps({
         </small>
         <div class="pt-5 pb-2">
           <div class="max-h-32 overflow-scroll">
-            <div
+            <button
               v-for="(month, index) in months"
-              :key="name - 'month' - index"
               :data-value="index + 1"
-              class="px-4 py-2"
+              :key="index"
+              type="button"
+              tabindex="-1"
+              class="block px-4 py-2"
             >
               {{ month }}
-            </div>
+            </button>
           </div>
         </div>
       </div>
@@ -103,10 +107,10 @@ const props = defineProps({
           <div class="max-h-32 overflow-scroll">
             <button
               v-for="(year, index) in years"
-              :key="name - 'year' - index"
+              :key="index"
               type="button"
               tabindex="-1"
-              class="px-4 py-2"
+              class="block px-4 py-2"
             >
               {{ year }}
             </button>
