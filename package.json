@@ -6,6 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
+    "debug:unit": "node --nolazy --inspect-brk ./node_modules/.bin/jest --runInBand --no-cache",
     "lint": "vue-cli-service lint",
     "watch:unit": "vue-cli-service test:unit --watch"
   },
