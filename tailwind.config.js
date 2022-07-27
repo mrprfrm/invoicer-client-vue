@@ -21,8 +21,22 @@ module.exports = {
         },
       });
     }),
-    plugin(function ({ addComponents }) {
-      addComponents({
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        ".scroll-hidden::-webkit-scrollbar": {
+          display: "none",
+        },
+      });
+    }),
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        ".text-shadow-black": {
+          textShadow: "0 0 0 black",
+        },
+      });
+    }),
+    plugin(function ({ addUtilities }) {
+      addUtilities({
         ".branded-text": {
           background:
             "linear-gradient(to right, rgba(50,97,124,1), rgba(59,115,147,1))",

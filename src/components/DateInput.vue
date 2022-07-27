@@ -91,6 +91,22 @@ watch(csr, (newCSR, oldCSR) => {
 });
 
 // Methods
+
+function setYear(val) {
+  csr.value = SelectionRange.YEAR;
+  year.value = val;
+}
+
+function setMonth(val) {
+  csr.value = SelectionRange.MONTH;
+  month.value = val;
+}
+
+function setDay(val) {
+  csr.value = SelectionRange.DAY;
+  day.value = val;
+}
+
 function cleanValue() {
   if (csr.value === SelectionRange.DAY) {
     day.value = null;
@@ -102,9 +118,16 @@ function cleanValue() {
 }
 
 function setValue(evt) {
+  if (evt.keyCode === 9) {
+    return;
+  }
+
+  evt.preventDefault();
+
   if (evt.keyCode < 47 || evt.keyCode > 57) {
     return;
   }
+
   pressCount.value++;
   if (csr.value === SelectionRange.DAY) {
     if (pressCount.value === 1) {
@@ -180,14 +203,14 @@ function decrementCSR() {
 }
 
 function nextSelectionRange(evt) {
-  if (csr.value != SelectionRange.YEAR) {
+  if (csr.value < SelectionRange.YEAR) {
     evt.preventDefault();
   }
   csr.value++;
 }
 
 function prevSelectionRange(evt) {
-  if (csr.value != SelectionRange.DAY) {
+  if (csr.value > SelectionRange.DAY) {
     evt.preventDefault();
   }
   csr.value--;
@@ -229,7 +252,9 @@ function focusInput() {
     csr.value = isReverseFocus.value ? SelectionRange.YEAR : SelectionRange.DAY;
   }
 
-  csrInterval.value = setInterval(refreshSelection, 50);
+  if (isBlurable.value) {
+    csrInterval.value = setInterval(refreshSelection, 50);
+  }
 }
 
 function blurInput() {
@@ -276,13 +301,13 @@ function enableInputBlur() {
       @keydown.down.prevent="decrementValue"
       @keydown.backspace.prevent="cleanValue"
       @mousedown="selectDateSection"
-      @keydown.exact.prevent="setValue"
+      @keydown.exact="setValue"
       @focus="focusInput"
       @blur="blurInput"
       @paste.prevent
       type="text"
       ref="input"
-      class="text-sm py-3 px-4 border rounded-md focus:ring-brand focus:border-brand cursor-default"
+      class="text-sm py-3 px-4 border rounded-md focus:ring-brand focus:border-brand cursor-default text-transparent text-shadow-black"
     />
 
     <div
@@ -298,13 +323,13 @@ function enableInputBlur() {
           Day
         </small>
         <div class="pt-5 pb-2">
-          <div class="max-h-32 overflow-scroll">
+          <div class="max-h-32 overflow-scroll scroll-hidden">
             <button
               v-for="i in 31"
               :key="name + '-day-' + i"
               @mousedown="disableInputBlur"
               @mouseup="enableInputBlur"
-              @click="day = i"
+              @click="setDay(i)"
               type="button"
               tabindex="-1"
               class="block px-4 py-2"
@@ -322,11 +347,11 @@ function enableInputBlur() {
           Month
         </small>
         <div class="pt-5 pb-2">
-          <div class="max-h-32 overflow-scroll">
+          <div class="max-h-32 overflow-scroll scroll-hidden">
             <button
               v-for="(monthText, index) in months"
               :key="name + '-month-' + index"
-              @click="month = index + 1"
+              @click="setMonth(index + 1)"
               type="button"
               tabindex="-1"
               class="block px-4 py-2"
@@ -345,11 +370,11 @@ function enableInputBlur() {
         </small>
 
         <div class="pt-5 pb-2">
-          <div class="max-h-32 overflow-scroll">
+          <div class="max-h-32 overflow-scroll scroll-hidden">
             <button
               v-for="i in yearsNumber"
               :key="name + '-year-' + i"
-              @click="year = lastYear - i + 1"
+              @click="setYear(lastYear - i + 1)"
               type="button"
               tabindex="-1"
               class="block px-4 py-2"
