@@ -118,11 +118,22 @@ function cleanValue() {
 }
 
 function setValue(evt) {
-  if (evt.keyCode === 9) {
-    return;
+  switch (evt.keyCode) {
+    case 9:
+      return;
+    case 74:
+      evt.preventDefault();
+      decrementValue();
+      return;
+    case 75:
+      evt.preventDefault();
+      incrementValue();
+      return;
+    default:
+      evt.preventDefault();
   }
 
-  evt.preventDefault();
+  // evt.preventDefault();
 
   if (evt.keyCode < 47 || evt.keyCode > 57) {
     return;
@@ -257,8 +268,9 @@ function focusInput() {
   }
 }
 
-function blurInput() {
+function blurInput(evt) {
   if (!isBlurable.value) {
+    evt.preventDefault();
     return;
   }
   // TODO If required validate input has not empty

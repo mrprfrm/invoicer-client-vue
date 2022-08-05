@@ -220,8 +220,6 @@ describe("Date tests", () => {
     await input.trigger("keydown.backspace");
     expect(input.element.value).toBe("__-__-____");
   });
-
-  // TODO backspace tests
 });
 
 describe("Datepicker tests", () => {
@@ -242,14 +240,33 @@ describe("Datepicker tests", () => {
     expect(wrapper.find(".datepicker-years").isVisible()).toBe(false);
   });
 
-  // it("Date input select date", async () => {
-  //   const wrapper = factory();
-  //   await wrapper.find("input").trigger("focus");
-  //   // await wrapper
-  //   //   .find(".datepicker")
-  //   //   .find(".datepicker__days")
-  //   //   .findAll("button")[0]
-  //   //   .trigger("click");
-  //   // expect(wrapper.find("input").element.value).toBe("01.mm.yyyy");
-  // });
+  it("Date input select day", async () => {
+    const wrapper = factory();
+    await wrapper.find("input").trigger("focus");
+    await wrapper
+      .find(".datepicker-days")
+      .findAll("button")[0]
+      .trigger("click");
+    expect(wrapper.find("input").element.value).toBe("01-__-____");
+  });
+
+  it("Date input select month", async () => {
+    const wrapper = factory();
+    await wrapper.find("input").trigger("focus");
+    await wrapper
+      .find(".datepicker-months")
+      .findAll("button")[0]
+      .trigger("click");
+    expect(wrapper.find("input").element.value).toBe("__-01-____");
+  });
+
+  it("Date input select year", async () => {
+    const wrapper = factory();
+    await wrapper.find("input").trigger("focus");
+    await wrapper
+      .find(".datepicker-years")
+      .findAll("button")[0]
+      .trigger("click");
+    expect(wrapper.find("input").element.value).toBe("__-__-2022");
+  });
 });
