@@ -52,6 +52,7 @@ const input = ref(null);
 
 const isBlurable = ref(true);
 const isFocused = ref(false);
+const isOpened = ref(true);
 const isReverseFocus = ref(false);
 
 // current selection range
@@ -108,6 +109,7 @@ function setDay(val) {
 }
 
 function cleanValue() {
+  pressCount.value = 0;
   if (csr.value === SelectionRange.DAY) {
     day.value = null;
   } else if (csr.value === SelectionRange.MONTH) {
@@ -119,6 +121,8 @@ function cleanValue() {
 
 function setValue(evt) {
   switch (evt.keyCode) {
+    case 8:
+      return;
     case 9:
       return;
     case 74:
@@ -132,8 +136,6 @@ function setValue(evt) {
     default:
       evt.preventDefault();
   }
-
-  // evt.preventDefault();
 
   if (evt.keyCode < 47 || evt.keyCode > 57) {
     return;
@@ -252,6 +254,10 @@ function selectDateSection(evt) {
     csr.value = SelectionRange.MONTH;
   } else if (posX > monthLimit && evt.layerX < yearLimit) {
     csr.value = SelectionRange.YEAR;
+  } else if (isFocused.value && isOpened.value) {
+    isOpened.value = false;
+  } else {
+    isOpened.value = true;
   }
 }
 
@@ -278,6 +284,7 @@ function blurInput(evt) {
   clearInterval(csrInterval);
   csrInterval.value = null;
   isFocused.value = false;
+  isOpened.value = true;
   csr.value = null;
 }
 
@@ -319,11 +326,11 @@ function enableInputBlur() {
       @paste.prevent
       type="text"
       ref="input"
-      class="text-sm py-3 px-4 border rounded-md focus:ring-brand focus:border-brand cursor-default text-transparent text-shadow-black"
+      class="text-sm py-3 px-4 border rounded-md focus:ring-brand focus:border-brand cursor-default"
     />
 
     <div
-      v-show="isFocused"
+      v-show="isFocused && isOpened"
       @mousedown="disableInputBlur"
       @mouseup="enableInputBlur"
       class="z-20 absolute top-full flex mt-3 bg-white border border-gray-500 rounded-md"
