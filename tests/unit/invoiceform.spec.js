@@ -19,18 +19,6 @@ describe("New invoice form", () => {
     expect(invoiceFieldSet.find("[name=invoice-date]").exists()).toBe(true);
   });
 
-  it("New contract fieldset fields are exists", () => {
-    const wrapper = factory();
-    const contractFields = wrapper.find("#contract-fields");
-    expect(contractFields.exists()).toBe(true);
-    expect(contractFields.find("[name=contract-name]").exists()).toBe(true);
-    expect(contractFields.find("[name=contract-date]").exists()).toBe(true);
-    expect(contractFields.find("[name=contract-client]").exists()).toBe(true);
-    expect(contractFields.find("[name=contract-contractor]").exists()).toBe(
-      true
-    );
-  });
-
   it("Goods and services section is empty", () => {
     const wrapper = factory();
     const invoiceServices = wrapper.find("#invoice-services");

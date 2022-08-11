@@ -125,6 +125,10 @@ function setValue(evt) {
       return;
     case 9:
       return;
+    case 72:
+      evt.preventDefault();
+      decrementCSR();
+      return;
     case 74:
       evt.preventDefault();
       decrementValue();
@@ -133,11 +137,16 @@ function setValue(evt) {
       evt.preventDefault();
       incrementValue();
       return;
+    case 76:
+      evt.preventDefault();
+      incrementCSR();
+      return;
     default:
       evt.preventDefault();
   }
 
   if (evt.keyCode < 47 || evt.keyCode > 57) {
+    evt.preventDefault();
     return;
   }
 
@@ -300,10 +309,7 @@ function enableInputBlur() {
 
 <template>
   <div class="relative flex flex-col">
-    <label
-      :for="name"
-      class="z-10 absolute -mt-2 text-xs px-0.5 ml-2.5 bg-white text-gray-500"
-    >
+    <label :for="name" class="mb-1 text-base">
       {{ label }}
     </label>
 
@@ -320,88 +326,68 @@ function enableInputBlur() {
       @keydown.down.prevent="decrementValue"
       @keydown.backspace.prevent="cleanValue"
       @mousedown="selectDateSection"
+      @keydown.shift.exact="setValue"
       @keydown.exact="setValue"
       @focus="focusInput"
       @blur="blurInput"
       @paste.prevent
       type="text"
       ref="input"
-      class="text-sm py-3 px-4 border rounded-md focus:ring-brand focus:border-brand cursor-default"
+      class="text-base py-3.5 px-4 border-none rounded-xl focus:ring-brand focus:border-brand cursor-default selection:text-brand-400 selection:bg-brand-100"
+      :class="{ 'text-brand-200': !year && !month && !day }"
     />
 
     <div
       v-show="isFocused && isOpened"
       @mousedown="disableInputBlur"
       @mouseup="enableInputBlur"
-      class="z-20 absolute top-full flex mt-3 bg-white border border-gray-500 rounded-md"
+      class="z-20 absolute top-full flex mt-2 p-7.5 space-x-7.5 bg-white border-none rounded-xl shadow-dark before:absolute before:inset-0 before:from-white before:via-white before:bg-gradient-to-b before:bottom-auto before:h-14 before:rounded-xl after:absolute after:inset-0 after:from-white after:via-white after:bg-gradient-to-t after:top-auto after:h-14 after:rounded-xl"
     >
-      <div class="datepicker-days">
-        <small
-          class="absolute -mt-2 text-xs px-0.5 ml-2.5 bg-white text-gray-500"
+      <div
+        class="datepicker-days flex flex-col max-h-26.25 space-y-6 overflow-scroll scroll-hidden"
+      >
+        <button
+          v-for="i in 31"
+          :key="name + '-day-' + i"
+          @mousedown="disableInputBlur"
+          @mouseup="enableInputBlur"
+          @click="setDay(i)"
+          type="button"
+          tabindex="-1"
+          class="flex justify-center leading-none"
         >
-          Day
-        </small>
-        <div class="pt-5 pb-2">
-          <div class="max-h-32 overflow-scroll scroll-hidden">
-            <button
-              v-for="i in 31"
-              :key="name + '-day-' + i"
-              @mousedown="disableInputBlur"
-              @mouseup="enableInputBlur"
-              @click="setDay(i)"
-              type="button"
-              tabindex="-1"
-              class="block px-4 py-2"
-            >
-              {{ `0${i}`.slice(-2) }}
-            </button>
-          </div>
-        </div>
+          {{ i }}
+        </button>
       </div>
 
-      <div class="datepicker-months">
-        <small
-          class="absolute -mt-2 text-xs px-0.5 ml-2.5 bg-white text-gray-500"
+      <div
+        class="datepicker-months flex flex-col max-h-26.25 space-y-6 overflow-scroll scroll-hidden"
+      >
+        <button
+          v-for="(monthText, index) in months"
+          :key="name + '-month-' + index"
+          @click="setMonth(index + 1)"
+          type="button"
+          tabindex="-1"
+          class="flex justify-center leading-none"
         >
-          Month
-        </small>
-        <div class="pt-5 pb-2">
-          <div class="max-h-32 overflow-scroll scroll-hidden">
-            <button
-              v-for="(monthText, index) in months"
-              :key="name + '-month-' + index"
-              @click="setMonth(index + 1)"
-              type="button"
-              tabindex="-1"
-              class="block px-4 py-2"
-            >
-              {{ monthText }}
-            </button>
-          </div>
-        </div>
+          {{ monthText }}
+        </button>
       </div>
 
-      <div class="datepicker-years">
-        <small
-          class="absolute -mt-2 text-xs px-0.5 ml-2.5 bg-white text-gray-500"
+      <div
+        class="datepicker-years flex flex-col max-h-26.25 space-y-6 overflow-scroll scroll-hidden"
+      >
+        <button
+          v-for="i in yearsNumber"
+          :key="name + '-year-' + i"
+          @click="setYear(lastYear - i + 1)"
+          type="button"
+          tabindex="-1"
+          class="flex justify-center leading-none"
         >
-          Year
-        </small>
-
-        <div class="pt-5 pb-2">
-          <div class="max-h-32 overflow-scroll scroll-hidden">
-            <button
-              v-for="i in yearsNumber"
-              :key="name + '-year-' + i"
-              @click="setYear(lastYear - i + 1)"
-              type="button"
-              tabindex="-1"
-              class="block px-4 py-2"
-            >
-              {{ lastYear - i + 1 }}
-            </button>
-          </div>
-        </div>
+          {{ lastYear - i + 1 }}
+        </button>
       </div>
     </div>
   </div>

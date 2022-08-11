@@ -220,6 +220,10 @@ describe("Date tests", () => {
     await input.trigger("keydown.backspace");
     expect(input.element.value).toBe("__-__-____");
   });
+
+  // TODO test store changed
+  // TODO test enter text
+  // TODO test enter uppercase text
 });
 
 describe("Datepicker tests", () => {
@@ -269,4 +273,6 @@ describe("Datepicker tests", () => {
       .trigger("click");
     expect(wrapper.find("input").element.value).toBe("__-__-2022");
   });
+
+  // TODO test store changed 
 });

@@ -1,6 +1,6 @@
 <script>
 export default {
-  props: ["name", "label"],
+  props: ["name", "placeholder", "label"],
 
   setup() {},
 };
@@ -8,17 +8,15 @@ export default {
 
 <template>
   <div class="flex flex-col">
-    <label
-      :for="name"
-      class="z-10 absolute -mt-2 text-xs px-0.5 ml-2.5 bg-white"
-    >
+    <label :for="name" class="mb-1 text-base">
       {{ label }}
     </label>
     <input
       :id="name"
       :name="name"
+      :placeholder="placeholder"
       type="text"
-      class="text-sm py-3 px-4 border rounded-md focus:ring-brand focus:border-brand"
+      class="text-base py-3.5 px-4 border-none rounded-xl focus:ring-brand focus:border-brand placeholder:text-brand-200 selection:text-brand-400 selection:bg-brand-100"
     />
   </div>
 </template>
