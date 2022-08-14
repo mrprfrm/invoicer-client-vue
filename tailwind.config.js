@@ -12,7 +12,11 @@ module.exports = {
           200: "#C5C4FF",
           300: "#9491FD",
           400: "#4440EA",
+          500: "#121131",
         },
+      },
+      borderRadius: {
+        "2.5xl": "1.875rem",
       },
       padding: {
         3.75: "0.9375rem",

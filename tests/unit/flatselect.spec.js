@@ -56,7 +56,7 @@ describe("Mouse click selection test", () => {
     expect(option.classes("selected")).toBe(false);
   });
 
-  // TODO test store changed
+  // TODO: test store changed
 });
 
 describe("Keys press selection test", () => {
@@ -115,5 +115,5 @@ describe("Keys press selection test", () => {
     expect(option.classes("selected")).toBe(false);
   });
 
-  // TODO test store changed
+  // TODO: test store changed
 });

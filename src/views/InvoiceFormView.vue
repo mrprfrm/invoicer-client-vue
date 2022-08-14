@@ -2,7 +2,12 @@
 import TextInput from "../components/TextInput.vue";
 import DateInput from "../components/DateInput.vue";
 import FlatSelect from "../components/FlatSelect.vue";
-import { ref } from "vue";
+import ContractorModal from "../components/ContractorModal.vue";
+import ClientModal from "../components/ClientModal.vue";
+import { useStore } from "vuex";
+import { ref, computed } from "vue";
+
+const store = useStore();
 
 const date = ref("");
 const contractors = ref([
@@ -21,10 +26,26 @@ const clients = ref([
     name: "NITKA, INC., Virgin Islands, British",
   },
 ]);
+
+const clientModalOpened = computed(() => store.state.clientModalOpened);
+const contractorModalOpened = computed(() => store.state.contractorModalOpened);
+
+const toggleClientModal = () => store.dispatch("TOGGLE_CLIENT_MODAL");
+const toggleContractorModal = () => store.dispatch("TOGGLE_CONTRACTOR_MODAL");
+
+function scrollHandler(evt) {
+  if (clientModalOpened.value || contractorModalOpened.value) {
+    evt.preventDefault();
+  }
+}
 </script>
 
 <template>
-  <div class="flex flex-col flex-1 px-4 py-15 bg-brand-100">
+  <div
+    v-on:scroll="scrollHandler"
+    @scroll="scrollHandler"
+    class="flex flex-col flex-1 px-4 py-15 bg-brand-100 overflow-scroll"
+  >
     <form class="flex flex-col text-brand-400 space-y-10">
       <h1 class="text-3xl font-bold">Invoice</h1>
       <div class="flex flex-col space-y-2.5">
@@ -58,6 +79,7 @@ const clients = ref([
         <h2 class="text-2xl font-semibold">Choose contractor</h2>
         <FlatSelect :options="contractors"></FlatSelect>
         <button
+          @click="toggleContractorModal"
           type="button"
           class="flex justify-center text-brand-300 p-4 rounded-xl border border-dashed border-brand-300"
         >
@@ -69,6 +91,8 @@ const clients = ref([
         <h2 class="text-2xl font-semibold">Choose client</h2>
         <FlatSelect :options="clients"></FlatSelect>
         <button
+          @click="toggleClientModal"
+          type="button"
           class="flex justify-center text-brand-300 p-4 rounded-xl border border-dashed border-brand-300"
         >
           + new client
@@ -108,5 +132,7 @@ const clients = ref([
         </button>
       </div>
     </form>
+    <ClientModal v-if="clientModalOpened"></ClientModal>
+    <ContractorModal v-if="contractorModalOpened"></ContractorModal>
   </div>
 </template>

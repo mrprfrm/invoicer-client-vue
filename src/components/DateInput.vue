@@ -288,7 +288,7 @@ function blurInput(evt) {
     evt.preventDefault();
     return;
   }
-  // TODO If required validate input has not empty
+  // TODO: If required validate input has not empty
   emit("update:modelValue", input.value.value);
   clearInterval(csrInterval);
   csrInterval.value = null;

@@ -4,6 +4,7 @@ import store from "@/store";
 
 function factory() {
   return shallowMount(DateInput, {
+    // hello WARN some
     props: {
       name: "test-date",
       label: "Test date",
@@ -221,9 +222,9 @@ describe("Date tests", () => {
     expect(input.element.value).toBe("__-__-____");
   });
 
-  // TODO test store changed
-  // TODO test enter text
-  // TODO test enter uppercase text
+  // TODO: test store changed
+  // TODO: test enter text
+  // TODO: test enter uppercase text
 });
 
 describe("Datepicker tests", () => {
@@ -274,5 +275,5 @@ describe("Datepicker tests", () => {
     expect(wrapper.find("input").element.value).toBe("__-__-2022");
   });
 
-  // TODO test store changed 
+  // TODO: test store changed
 });

@@ -1,22 +1,18 @@
-<script>
-export default {
-  props: ["name", "placeholder", "label"],
+<script setup>
+import { defineProps } from "vue";
 
-  setup() {},
-};
+defineProps(["name", "placeholder", "label"]);
 </script>
 
 <template>
-  <div class="flex flex-col">
-    <label :for="name" class="mb-1 text-base">
-      {{ label }}
-    </label>
+  <div class="flex flex-col space-y-1 text-base">
+    <label :for="name">{{ label }}</label>
     <input
       :id="name"
       :name="name"
       :placeholder="placeholder"
       type="text"
-      class="text-base py-3.5 px-4 border-none rounded-xl focus:ring-brand focus:border-brand placeholder:text-brand-200 selection:text-brand-400 selection:bg-brand-100"
+      class="py-3.5 px-4 border-none rounded-xl focus:ring-brand-400 focus:border-brand-400 placeholder:text-brand-200 selection:text-brand-400 selection:bg-brand-100"
     />
   </div>
 </template>
