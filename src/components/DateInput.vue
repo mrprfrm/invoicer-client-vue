@@ -333,7 +333,7 @@ function enableInputBlur() {
       @paste.prevent
       type="text"
       ref="input"
-      class="text-base py-3.5 px-4 border-none rounded-xl focus:ring-brand focus:border-brand cursor-default selection:text-brand-400 selection:bg-brand-100"
+      class="text-base py-3.5 px-4 border-none rounded-xl cursor-default selection:text-brand-400 selection:bg-brand-100"
       :class="{ 'text-brand-200': !year && !month && !day }"
     />
 

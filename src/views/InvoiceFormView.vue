@@ -4,12 +4,12 @@ import DateInput from "../components/DateInput.vue";
 import FlatSelect from "../components/FlatSelect.vue";
 import ContractorModal from "../components/ContractorModal.vue";
 import ClientModal from "../components/ClientModal.vue";
+import ServiceCard from "../components/ServiceCard.vue";
 import { useStore } from "vuex";
 import { ref, computed } from "vue";
 
 const store = useStore();
 
-const date = ref("");
 const contractors = ref([
   {
     id: 1,
@@ -20,10 +20,22 @@ const contractors = ref([
     name: "IE Petrov",
   },
 ]);
+
 const clients = ref([
   {
     id: 1,
     name: "NITKA, INC., Virgin Islands, British",
+  },
+]);
+
+const services = ref([
+  {
+    id: 1,
+    description: "Payment by contract NTK-AP-1",
+    quantity: 2,
+    range: "month",
+    amount: 1,
+    price: 9873.0,
   },
 ]);
 
@@ -32,6 +44,12 @@ const contractorModalOpened = computed(() => store.state.contractorModalOpened);
 
 const toggleClientModal = () => store.dispatch("TOGGLE_CLIENT_MODAL");
 const toggleContractorModal = () => store.dispatch("TOGGLE_CONTRACTOR_MODAL");
+
+const total = computed(() =>
+  services.value
+    .filter((itm) => itm.price)
+    .reduce((val, itm) => (val += itm.price), 0)
+);
 
 function scrollHandler(evt) {
   if (clientModalOpened.value || contractorModalOpened.value) {
@@ -44,7 +62,7 @@ function scrollHandler(evt) {
   <div
     v-on:scroll="scrollHandler"
     @scroll="scrollHandler"
-    class="flex flex-col flex-1 px-4 py-15 bg-brand-100 overflow-scroll"
+    class="flex flex-col flex-1 px-4 pt-15 pb-6 bg-brand-100 overflow-scroll"
   >
     <form class="flex flex-col text-brand-400 space-y-10">
       <h1 class="text-3xl font-bold">Invoice</h1>
@@ -99,39 +117,36 @@ function scrollHandler(evt) {
         </button>
       </div>
 
-      <div id="invoice-services" class="space-y-4">
+      <div class="flex flex-col space-y-2.5">
         <h2 class="text-xl font-bold">Goods and services</h2>
-        <div class="services__description">
-          <span>There is no added goods or services yet.</span>
-          <span class="flex flex-row items-center">
-            Do you want to
-            <button
-              id="add-service"
-              class="p-1 ml-1 text-base font-bold rounded-md focus:ring-2 ring-blue-600 outline-none branded-text focus:ring-brand"
-            >
-              Add new item
-            </button>
-            ?
-          </span>
-        </div>
+        <ServiceCard
+          v-for="service in services"
+          :key="service.id"
+          :service="service"
+        ></ServiceCard>
+
+        <ServiceCard :service="service" :edit="true"></ServiceCard>
+
+        <button
+          type="button"
+          class="flex justify-center text-brand-300 p-4 rounded-xl border border-dashed border-brand-300"
+        >
+          + add item
+        </button>
+        <span
+          class="self-end text-xl font-semibold p-4 border-2 border-brand-300 rounded-xl"
+          >Total {{ total.toFixed(2) }} USD</span
+        >
       </div>
 
-      <div
-        id="invoice-buttons"
-        class="flex flex-row items-center justify-end space-x-2"
+      <button
+        type="button"
+        class="flex flex-1 p-4 justify-center rounded-2.5xl bg-accept-200 text-xl leading-6 text-white"
       >
-        <button id="invoice-cancel" type="button" class="btn focus:ring-brand">
-          Cancel
-        </button>
-        <button
-          id="invoice-save"
-          type="submit"
-          class="btn text-white branded-bg focus:ring-brand"
-        >
-          Save
-        </button>
-      </div>
+        See preview
+      </button>
     </form>
+
     <ClientModal v-if="clientModalOpened"></ClientModal>
     <ContractorModal v-if="contractorModalOpened"></ContractorModal>
   </div>

@@ -14,9 +14,14 @@ module.exports = {
           400: "#4440EA",
           500: "#121131",
         },
+        accept: {
+          100: "#ABDEAA",
+          200: "#1AB517",
+        },
+        danger: "#EA4040",
       },
       borderRadius: {
-        "2.5xl": "1.875rem",
+        "2.5xl": "1.25rem",
       },
       padding: {
         3.75: "0.9375rem",
@@ -56,6 +61,14 @@ module.exports = {
       addUtilities({
         ".text-shadow-black": {
           textShadow: "0 0 0 black",
+        },
+      });
+    }),
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        ".bg-brand-gradient": {
+          background:
+            "radial-gradient(134.2% 110.5% at -9.28% -8.59%, #B9B8FF 0%, #7673FF 60.94%, #4643F7 100%)",
         },
       });
     }),
