@@ -18,7 +18,7 @@ function toggleSelection(val) {
   }
 }
 
-function keysHandler(evt, optionId) {
+function keypressHandler(evt, optionId) {
   switch (evt.keyCode) {
     case 8:
       return;
@@ -79,8 +79,8 @@ watch(selection, (newSelection) => {
       @keydown.down="incrementSelection"
       @keydown.up="decrementSelection"
       @keydown.space.prevent="toggleSelection(option.id)"
-      @keydown.shift.exact="keysHandler($event, option.id)"
-      @keydown.exact="keysHandler($event, option.id)"
+      @keydown.shift.exact="keypressHandler($event, option.id)"
+      @keydown.exact="keypressHandler($event, option.id)"
       type="button"
       class="flex justify-between p-4 rounded-xl border border-brand-300"
       ref="optionsElements"
