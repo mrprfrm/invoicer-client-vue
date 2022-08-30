@@ -26,11 +26,13 @@ const closeModal = () => store.dispatch("CLOSE_CLIENT_MODAL");
           <TextArea
             name="address"
             label="Registration address"
+            allow-new-lines="false"
             placeholder="Enter address"
           ></TextArea>
           <TextArea
             name="bankAddress"
             label="Bank address"
+            allow-new-lines="false"
             placeholder="Enter address"
           ></TextArea>
           <TextInput

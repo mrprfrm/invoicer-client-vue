@@ -27,6 +27,7 @@ const closeContractorModal = () => store.dispatch("CLOSE_CONTRACTOR_MODAL");
           <TextArea
             name="address"
             label="Registration address"
+            allow-new-lines="false"
             placeholder="Enter address"
           ></TextArea>
           <TextInput
@@ -37,6 +38,7 @@ const closeContractorModal = () => store.dispatch("CLOSE_CONTRACTOR_MODAL");
           <TextArea
             name="bankAddress"
             label="Bank address"
+            allow-new-lines="false"
             placeholder="Enter address"
           ></TextArea>
           <TextInput
