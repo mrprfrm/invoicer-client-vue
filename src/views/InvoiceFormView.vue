@@ -7,8 +7,13 @@ import ClientModal from "../components/ClientModal.vue";
 import ServiceCard from "../components/ServiceCard.vue";
 import { useStore } from "vuex";
 import { ref, computed } from "vue";
+import TextArea from "@/components/TextArea.vue";
+import ChevronDown from "@/icons/ChevronDown.vue";
+import ChevronUp from "@/icons/ChevronUp.vue";
 
 const store = useStore();
+
+const isTermsOpened = ref(false);
 
 const contractors = ref([
   {
@@ -137,6 +142,24 @@ function scrollHandler(evt) {
           class="self-end text-xl font-semibold p-4 border-2 border-brand-300 rounded-xl"
           >Total {{ total.toFixed(2) }} USD</span
         >
+      </div>
+
+      <div class="flex flex-col space-y-2.5">
+        <button
+          @click="isTermsOpened = !isTermsOpened"
+          class="flex flex-row justify-between items-center"
+          type="button"
+        >
+          <h2 class="text-xl font-bold">Terms & Conditions</h2>
+          <ChevronDown v-if="!isTermsOpened"></ChevronDown>
+          <ChevronUp v-if="isTermsOpened"></ChevronUp>
+        </button>
+        <div v-if="isTermsOpened">
+          <TextArea
+            name="terms"
+            placeholder="Enter terms and conditions"
+          ></TextArea>
+        </div>
       </div>
 
       <button
