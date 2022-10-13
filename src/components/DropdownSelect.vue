@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, defineProps } from "vue";
+import { ref, computed, defineProps, defineEmits } from "vue";
 
 import ChevronDown from "../icons/ChevronDown.vue";
 import CheckIcon from "../icons/CheckIcon.vue";
@@ -11,7 +11,10 @@ const props = defineProps([
   "options",
   "default",
   "selectClass",
+  "modelValue",
 ]);
+
+const emit = defineEmits(["update:modelValue"]);
 
 const select = ref(null);
 const selection = ref(null);
@@ -46,6 +49,7 @@ function toggleOptions() {
 function selectOption(option) {
   selected.value = option;
   isOpened.value = false;
+  emit("update:modelValue", option);
 }
 
 function incrementSelection() {
