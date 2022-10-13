@@ -1,32 +1,27 @@
 import { shallowMount } from "@vue/test-utils";
 import FlatSelect from "@/components/FlatSelect.vue";
-import store from "@/store";
-
-function factory() {
-  return shallowMount(FlatSelect, {
-    props: {
-      options: [
-        {
-          id: 1,
-          name: "IE Petrov Anton Sergeevich",
-        },
-        {
-          id: 2,
-          name: "IE Petrov",
-        },
-      ],
-    },
-    globals: {
-      globals: {
-        plugins: [store],
-      },
-    },
-  });
-}
 
 describe("Mouse click selection test", () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = shallowMount(FlatSelect, {
+      props: {
+        options: [
+          {
+            id: 1,
+            name: "IE Petrov Anton Sergeevich",
+          },
+          {
+            id: 2,
+            name: "IE Petrov",
+          },
+        ],
+      },
+    });
+  });
+
   it("Select an option", async () => {
-    const wrapper = factory();
     const option = wrapper.findAll("button")[0];
 
     await option.trigger("click");
@@ -34,7 +29,6 @@ describe("Mouse click selection test", () => {
   });
 
   it("Select another option", async () => {
-    const wrapper = factory();
     const option = wrapper.findAll("button")[0];
     const option1 = wrapper.findAll("button")[1];
 
@@ -46,7 +40,6 @@ describe("Mouse click selection test", () => {
   });
 
   it("Remove selection", async () => {
-    const wrapper = factory();
     const option = wrapper.findAll("button")[0];
 
     await option.trigger("click");
@@ -60,8 +53,26 @@ describe("Mouse click selection test", () => {
 });
 
 describe("Keys press selection test", () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = shallowMount(FlatSelect, {
+      props: {
+        options: [
+          {
+            id: 1,
+            name: "IE Petrov Anton Sergeevich",
+          },
+          {
+            id: 2,
+            name: "IE Petrov",
+          },
+        ],
+      },
+    });
+  });
+
   it("Toggle option selection", async () => {
-    const wrapper = factory();
     const option = wrapper.findAll("button")[0];
 
     await option.trigger("focus");
@@ -73,7 +84,6 @@ describe("Keys press selection test", () => {
   });
 
   it("Toggle another option selection", async () => {
-    const wrapper = factory();
     const option = wrapper.findAll("button")[0];
     const option1 = wrapper.findAll("button")[1];
 
@@ -89,7 +99,6 @@ describe("Keys press selection test", () => {
   });
 
   it("Select an option", async () => {
-    const wrapper = factory();
     const option = wrapper.findAll("button")[0];
 
     await option.trigger("focus");
@@ -101,7 +110,6 @@ describe("Keys press selection test", () => {
   });
 
   it("Remove option selection", async () => {
-    const wrapper = factory();
     const option = wrapper.findAll("button")[0];
 
     await option.trigger("focus");

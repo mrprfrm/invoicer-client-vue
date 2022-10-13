@@ -1,24 +1,20 @@
 import { shallowMount } from "@vue/test-utils";
 import DateInput from "@/components/DateInput.vue";
-import store from "@/store";
-
-function factory() {
-  return shallowMount(DateInput, {
-    // hello WARN some
-    props: {
-      name: "test-date",
-      label: "Test date",
-      modelValue: "",
-    },
-    globals: {
-      plugins: [store],
-    },
-  });
-}
 
 describe("Date tests", () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = shallowMount(DateInput, {
+      props: {
+        name: "test-date",
+        label: "Test date",
+        modelValue: "",
+      },
+    });
+  });
+
   it("Input day", async () => {
-    const wrapper = factory();
     const input = wrapper.find("input");
 
     await input.trigger("focus");
@@ -39,7 +35,6 @@ describe("Date tests", () => {
   });
 
   it("Input month", async () => {
-    const wrapper = factory();
     const input = wrapper.find("input");
 
     await input.trigger("focus");
@@ -61,7 +56,6 @@ describe("Date tests", () => {
   });
 
   it("Input year", async () => {
-    const wrapper = factory();
     const input = wrapper.find("input");
 
     await input.trigger("focus");
@@ -85,7 +79,6 @@ describe("Date tests", () => {
   });
 
   it("Press up day", async () => {
-    const wrapper = factory();
     const input = wrapper.find("input");
 
     await input.trigger("focus");
@@ -101,7 +94,6 @@ describe("Date tests", () => {
   });
 
   it("Press up month", async () => {
-    const wrapper = factory();
     const input = wrapper.find("input");
 
     await input.trigger("focus");
@@ -118,7 +110,6 @@ describe("Date tests", () => {
   });
 
   it("Press up year", async () => {
-    const wrapper = factory();
     const input = wrapper.find("input");
 
     await input.trigger("focus");
@@ -133,7 +124,6 @@ describe("Date tests", () => {
   });
 
   it("Press down day", async () => {
-    const wrapper = factory();
     const input = wrapper.find("input");
 
     await input.trigger("focus");
@@ -149,7 +139,6 @@ describe("Date tests", () => {
   });
 
   it("Press down month", async () => {
-    const wrapper = factory();
     const input = wrapper.find("input");
 
     await input.trigger("focus");
@@ -166,7 +155,6 @@ describe("Date tests", () => {
   });
 
   it("Press down year", async () => {
-    const wrapper = factory();
     const input = wrapper.find("input");
 
     await input.trigger("focus");
@@ -181,7 +169,6 @@ describe("Date tests", () => {
   });
 
   it("Press backspace day", async () => {
-    const wrapper = factory();
     const input = wrapper.find("input");
 
     await input.trigger("focus");
@@ -194,7 +181,6 @@ describe("Date tests", () => {
   });
 
   it("Press backspace month", async () => {
-    const wrapper = factory();
     const input = wrapper.find("input");
 
     await input.trigger("focus");
@@ -208,7 +194,6 @@ describe("Date tests", () => {
   });
 
   it("Press backspace year", async () => {
-    const wrapper = factory();
     const input = wrapper.find("input");
 
     await input.trigger("focus");
@@ -228,8 +213,19 @@ describe("Date tests", () => {
 });
 
 describe("Datepicker tests", () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = shallowMount(DateInput, {
+      props: {
+        name: "test-date",
+        label: "Test date",
+        modelValue: "",
+      },
+    });
+  });
+
   it("Date input focused", async () => {
-    const wrapper = factory();
     await wrapper.find("input#test-date").trigger("focus");
     expect(wrapper.find(".datepicker-days").exists()).toBe(true);
     expect(wrapper.find(".datepicker-months").exists()).toBe(true);
@@ -237,7 +233,6 @@ describe("Datepicker tests", () => {
   });
 
   it("Date input lost focus", async () => {
-    const wrapper = factory();
     await wrapper.find("input").trigger("focus");
     await wrapper.find("input").trigger("blur");
     expect(wrapper.find(".datepicker-days").isVisible()).toBe(false);
@@ -246,7 +241,6 @@ describe("Datepicker tests", () => {
   });
 
   it("Date input select day", async () => {
-    const wrapper = factory();
     await wrapper.find("input").trigger("focus");
     await wrapper
       .find(".datepicker-days")
@@ -256,7 +250,6 @@ describe("Datepicker tests", () => {
   });
 
   it("Date input select month", async () => {
-    const wrapper = factory();
     await wrapper.find("input").trigger("focus");
     await wrapper
       .find(".datepicker-months")
@@ -266,7 +259,6 @@ describe("Datepicker tests", () => {
   });
 
   it("Date input select year", async () => {
-    const wrapper = factory();
     await wrapper.find("input").trigger("focus");
     await wrapper
       .find(".datepicker-years")

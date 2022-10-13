@@ -1,17 +1,14 @@
 import { shallowMount } from "@vue/test-utils";
 import DropdownSelect from "@/components/DropdownSelect.vue";
-import { ref } from "vue";
 
 const options = ["year", "month", "week", "day"];
 
 describe("Mouse click selection test", () => {
   let wrapper;
-  let selectedValue;
 
   beforeEach(() => {
-    selectedValue = ref(null);
     wrapper = shallowMount(DropdownSelect, {
-      props: { options, default: "year", modelValue: selectedValue },
+      props: { options, default: "year" },
     });
   });
 
@@ -60,12 +57,10 @@ describe("Mouse click selection test", () => {
 
 describe("Keys press selection test", () => {
   let wrapper;
-  let selectedValue;
 
   beforeEach(() => {
-    selectedValue = ref(null);
     wrapper = shallowMount(DropdownSelect, {
-      props: { options, default: "year", modelValue: selectedValue },
+      props: { options, default: "year" },
     });
   });
 
