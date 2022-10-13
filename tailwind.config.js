@@ -8,11 +8,14 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          100: "#EBE7F7",
-          200: "#C5C4FF",
-          300: "#9491FD",
-          400: "#4440EA",
-          500: "#121131",
+          50: "#CDD1F0",
+          100: "#A9A8E0",
+          200: "#4C4B7E",
+          300: "#1B1A3E",
+        },
+        juicyblue: {
+          50: "#ACC8FF",
+          100: "#3177FF",
         },
         accept: {
           100: "#ABDEAA",
@@ -34,6 +37,9 @@ module.exports = {
       },
       boxShadow: {
         dark: "0px 4px 16px 0px rgba(68, 64, 234, 0.2);",
+        ms: "0px 4px 12px rgba(76, 75, 126, 0.25);",
+        ml: "0px 4px 12px rgba(76, 75, 126, 0.25);",
+        "inner-brand": "inset 0px 2px 6px rgba(76, 75, 126, 0.2);",
       },
       maxHeight: {
         26.25: "6.5625rem",

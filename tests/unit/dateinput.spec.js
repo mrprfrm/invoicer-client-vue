@@ -207,6 +207,16 @@ describe("Date tests", () => {
     expect(input.element.value).toBe("__-__-____");
   });
 
+  it("Press esc", async () => {
+    const input = wrapper.find("input");
+
+    await input.trigger("focus");
+    expect(wrapper.find(".datepicker-days").isVisible()).toBe(true);
+
+    await input.trigger("keydown.esc");
+    expect(wrapper.find(".datepicker-days").isVisible()).toBe(false);
+  });
+
   // TODO: test store changed
   // TODO: test enter text
   // TODO: test enter uppercase text

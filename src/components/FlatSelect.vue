@@ -69,7 +69,7 @@ watch(selection, (newSelection) => {
       :key="option.id"
       :tabindex="idx == 0 ? 0 : -1"
       :class="{
-        'selected bg-brand-400 border-brand-400 text-white':
+        'selected bg-brand-400 text-white bg-juicyblue-100 shadow-ms':
           option.id === selected,
       }"
       @focus="selection = idx"
@@ -82,7 +82,7 @@ watch(selection, (newSelection) => {
       @keydown.shift.exact="keypressHandler($event, option.id)"
       @keydown.exact="keypressHandler($event, option.id)"
       type="button"
-      class="flex justify-between p-4 rounded-xl border border-brand-300"
+      class="flex justify-between p-4 rounded-2.5xl border border-none shadow-ml outline-none focus:ring-1 focus:ring-juicyblue-100"
       ref="optionsElements"
     >
       <span>{{ option.name }}</span>

@@ -67,9 +67,9 @@ function scrollHandler(evt) {
   <div
     v-on:scroll="scrollHandler"
     @scroll="scrollHandler"
-    class="flex flex-col flex-1 px-4 pt-15 pb-6 bg-brand-100 overflow-scroll"
+    class="flex flex-col flex-1 px-4 pt-15 pb-6 bg-white overflow-scroll"
   >
-    <form class="flex flex-col text-brand-400 space-y-10">
+    <form class="flex flex-col text-brand-300 space-y-10">
       <h1 class="text-3xl font-bold">Invoice</h1>
       <div class="flex flex-col space-y-2.5">
         <h2 class="text-2xl font-semibold">Invoice information</h2>
@@ -104,7 +104,7 @@ function scrollHandler(evt) {
         <button
           @click="toggleContractorModal"
           type="button"
-          class="flex justify-center text-brand-300 p-4 rounded-xl border border-dashed border-brand-300"
+          class="flex justify-center text-brand-100 p-4 rounded-2.5xl border border-dashed border-brand-100 outline-none focus:ring-1 focus:ring-juicyblue-100"
         >
           + new contractor
         </button>
@@ -116,7 +116,7 @@ function scrollHandler(evt) {
         <button
           @click="toggleClientModal"
           type="button"
-          class="flex justify-center text-brand-300 p-4 rounded-xl border border-dashed border-brand-300"
+          class="flex justify-center text-brand-100 p-4 rounded-2.5xl border border-dashed border-brand-100 outline-none focus:ring-1 focus:ring-juicyblue-100"
         >
           + new client
         </button>

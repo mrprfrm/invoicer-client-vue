@@ -288,7 +288,7 @@ function blurInput(evt) {
     evt.preventDefault();
     return;
   }
-  // TODO: If required validate input has not empty
+  // TODO: If required validate input is not empty
   emit("update:modelValue", input.value.value);
   clearInterval(csrInterval);
   csrInterval.value = null;
@@ -318,6 +318,7 @@ function enableInputBlur() {
       :name="name"
       :value="value"
       :required="required"
+      @keydown.esc="isOpened = false"
       @keydown.tab.exact="nextSelectionRange"
       @keydown.shift.tab="prevSelectionRange"
       @keydown.right.prevent="incrementCSR"
@@ -333,7 +334,7 @@ function enableInputBlur() {
       @paste.prevent
       type="text"
       ref="input"
-      class="text-base py-3.5 px-4 border-none rounded-xl cursor-default selection:text-brand-400 selection:bg-brand-100"
+      class="text-base py-3.5 px-4 border-none rounded-xl cursor-default text-brand-300 selection:bg-brand-100 shadow-inner-brand focus:ring-juicyblue-100"
       :class="{ 'text-brand-200': !year && !month && !day }"
     />
 
