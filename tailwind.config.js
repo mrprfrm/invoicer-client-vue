@@ -17,11 +17,10 @@ module.exports = {
           50: "#ACC8FF",
           100: "#3177FF",
         },
-        accept: {
-          100: "#ABDEAA",
-          200: "#1AB517",
+        juicygreen: {
+          50: "#B2EBD0",
+          100: "#20C879",
         },
-        danger: "#EA4040",
       },
       borderRadius: {
         "2.5xl": "1.25rem",
@@ -37,7 +36,6 @@ module.exports = {
       },
       boxShadow: {
         dark: "0px 4px 16px 0px rgba(68, 64, 234, 0.2);",
-        ms: "0px 4px 12px rgba(76, 75, 126, 0.25);",
         ml: "0px 4px 12px rgba(76, 75, 126, 0.25);",
         "inner-brand": "inset 0px 2px 6px rgba(76, 75, 126, 0.2);",
       },
@@ -74,21 +72,7 @@ module.exports = {
       addUtilities({
         ".bg-brand-gradient": {
           background:
-            "radial-gradient(134.2% 110.5% at -9.28% -8.59%, #B9B8FF 0%, #7673FF 60.94%, #4643F7 100%)",
-        },
-      });
-    }),
-    plugin(function ({ addUtilities }) {
-      addUtilities({
-        ".branded-text": {
-          background:
-            "linear-gradient(to right, rgba(50,97,124,1), rgba(59,115,147,1))",
-          "-webkit-background-clip": "text",
-          "-webkit-text-fill-color": "transparent",
-        },
-        ".branded-bg": {
-          background:
-            "linear-gradient(to right, rgba(50,97,124,1), rgba(59,115,147,1))",
+            "radial-gradient(134.2% 110.5% at -9.28% -8.59%, #71A1FF 34.38%, #293CEB 93.23%)",
         },
       });
     }),

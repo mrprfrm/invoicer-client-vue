@@ -69,7 +69,7 @@ watch(selection, (newSelection) => {
       :key="option.id"
       :tabindex="idx == 0 ? 0 : -1"
       :class="{
-        'selected bg-brand-400 text-white bg-juicyblue-100 shadow-ms':
+        'selected bg-brand-400 text-white bg-juicyblue-100 shadow-ml':
           option.id === selected,
       }"
       @focus="selection = idx"

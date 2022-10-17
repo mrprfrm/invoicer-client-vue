@@ -95,6 +95,7 @@ function keypressHandler(evt) {
 <template>
   <div class="relative flex flex-col space-y-1 text-base">
     <label v-if="label" :for="name">{{ label }}</label>
+    <!-- Hide dropdown on esc click -->
     <button
       @click="toggleOptions"
       @blur="blurSelect"
@@ -103,18 +104,20 @@ function keypressHandler(evt) {
       @keydown.space.prevent="spaceHandler"
       @keydown.shift.exact="keypressHandler"
       @keydown.exact="keypressHandler"
+      :class="selectClass"
       class="flex items-center justify-between space-x-3.5 py-3.5 px-4 bg-white text-brand-400 rounded-xl cursor-pointer outline-none"
       type="button"
       tabindex="0"
       ref="select"
     >
       <span>{{ current }}</span>
+      <!-- Replace chevron with select marker -->
       <ChevronDown v-if="!isOpened"></ChevronDown>
       <ChevronUp v-if="isOpened"></ChevronUp>
     </button>
     <div
       v-if="isOpened"
-      class="options z-10 absolute flex flex-col flex-auto self-end space-y-7.5 top-full mt-2 py-7.5 pl-7.5 pr-4 bg-white rounded-xl text-brand-400"
+      class="options z-10 absolute flex flex-col flex-auto self-end space-y-7.5 top-full mt-2 py-7.5 pl-7.5 pr-4 bg-white rounded-xl text-brand-400 shadow-ml"
     >
       <button
         v-for="(option, idx) in options"

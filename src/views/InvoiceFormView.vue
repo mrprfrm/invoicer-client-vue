@@ -1,15 +1,18 @@
 <script setup>
+import { useStore } from "vuex";
+import { ref, computed } from "vue";
+
+import ChevronDown from "@/icons/ChevronDown.vue";
+import ChevronUp from "@/icons/ChevronUp.vue";
+
+import TextArea from "@/components/TextArea.vue";
 import TextInput from "../components/TextInput.vue";
 import DateInput from "../components/DateInput.vue";
 import FlatSelect from "../components/FlatSelect.vue";
 import ContractorModal from "../components/ContractorModal.vue";
 import ClientModal from "../components/ClientModal.vue";
 import ServiceCard from "../components/ServiceCard.vue";
-import { useStore } from "vuex";
-import { ref, computed } from "vue";
-import TextArea from "@/components/TextArea.vue";
-import ChevronDown from "@/icons/ChevronDown.vue";
-import ChevronUp from "@/icons/ChevronUp.vue";
+import ServiceForm from "../components/ServiceForm.vue";
 
 const store = useStore();
 
@@ -122,27 +125,27 @@ function scrollHandler(evt) {
         </button>
       </div>
 
-      <div class="flex flex-col space-y-2.5">
-        <h2 class="text-xl font-bold">Goods and services</h2>
+      <div class="flex flex-col space-y-3">
+        <h2 class="text-2xl font-semibold">Goods and services</h2>
         <ServiceCard
           v-for="service in services"
           :key="service.id"
           :service="service"
         ></ServiceCard>
-
-        <ServiceCard :service="service" :edit="true"></ServiceCard>
+        <ServiceForm></ServiceForm>
 
         <button
           type="button"
-          class="flex justify-center text-brand-300 p-4 rounded-xl border border-dashed border-brand-300"
+          class="flex justify-center text-brand-100 p-4 rounded-2.5xl border border-dashed border-brand-100"
         >
           + add item
         </button>
-        <span
-          class="self-end text-xl font-semibold p-4 border-2 border-brand-300 rounded-xl"
-          >Total {{ total.toFixed(2) }} USD</span
-        >
       </div>
+
+      <span
+        class="self-end text-xl font-semibold p-4 border-2 border-brand-100 rounded-2.5xl"
+        >Total {{ total.toFixed(2) }} USD</span
+      >
 
       <div class="flex flex-col space-y-2.5">
         <button
