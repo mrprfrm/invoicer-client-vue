@@ -63,7 +63,7 @@ watch(selection, (newSelection) => {
 </script>
 
 <template>
-  <div class="flex flex-col space-y-2.5">
+  <div class="flex flex-col space-y-3">
     <button
       v-for="(option, idx) in options"
       :key="option.id"

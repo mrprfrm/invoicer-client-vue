@@ -309,7 +309,7 @@ function enableInputBlur() {
 
 <template>
   <div class="relative flex flex-col">
-    <label :for="name" class="mb-1 text-base">
+    <label :for="name" class="mb-1.5 text-base">
       {{ label }}
     </label>
 

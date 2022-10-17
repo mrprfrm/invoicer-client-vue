@@ -5,7 +5,7 @@ defineProps(["name", "placeholder", "label", "inputClass"]);
 </script>
 
 <template>
-  <div class="flex flex-col space-y-1 text-base">
+  <div class="flex flex-col space-y-1.5 text-base">
     <label v-if="label" :for="name">{{ label }}</label>
     <input
       :id="name"

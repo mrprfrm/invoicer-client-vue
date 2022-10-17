@@ -12,12 +12,10 @@ const closeModal = () => store.dispatch("CLOSE_CLIENT_MODAL");
     <div class="absolute inset-0 opacity-90 bg-brand-300"></div>
     <div class="z-10 flex flex-col p-4 max-h-screen">
       <div
-        class="flex flex-col space-y-2.5 pt-7.5 pb-4 rounded-2.5xl bg-white max-h-full"
+        class="flex flex-col space-y-3 pt-7.5 pb-4 rounded-2.5xl bg-white max-h-full"
       >
         <h2 class="text-2xl mx-4 font-semibold">New client</h2>
-        <div
-          class="flex flex-col space-y-2.5 px-4 overflow-scroll scroll-hidden"
-        >
+        <div class="flex flex-col space-y-3 px-4 overflow-scroll scroll-hidden">
           <TextInput
             name="name"
             label="Name"
@@ -50,12 +48,12 @@ const closeModal = () => store.dispatch("CLOSE_CLIENT_MODAL");
           <button
             @click="closeModal"
             type="button"
-            class="py-3.5 border border-brand-400 flex-1 rounded-2.5xl"
+            class="py-3.5 border border-brand-100 flex-1 rounded-2.5xl text-brand-200"
           >
             Cancel
           </button>
           <button
-            class="py-3.5 border border-brand-200 flex-1 rounded-2.5xl bg-juicyblue-100 text-white"
+            class="py-3.5 border-none flex-1 rounded-2.5xl bg-juicyblue-100 text-white"
           >
             Save
           </button>

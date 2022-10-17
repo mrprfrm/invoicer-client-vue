@@ -20,7 +20,7 @@ function enterHandler(evt) {
 </script>
 
 <template>
-  <div class="flex flex-col space-y-1 text-base">
+  <div class="flex flex-col space-y-1.5 text-base">
     <label :for="name">{{ label }}</label>
     <div class="relative flex flex-col">
       <div v-if="isNewLinesAllowed" class="flex flex-col">

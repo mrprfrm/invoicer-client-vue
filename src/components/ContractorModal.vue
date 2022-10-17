@@ -8,16 +8,14 @@ const closeContractorModal = () => store.dispatch("CLOSE_CONTRACTOR_MODAL");
 </script>
 
 <template>
-  <div class="fixed flex flex-col justify-center inset-0 text-brand-400">
-    <div class="absolute inset-0 opacity-80 bg-brand-500"></div>
+  <div class="fixed flex flex-col justify-center inset-0 text-brand-300">
+    <div class="absolute inset-0 opacity-90 bg-brand-300"></div>
     <div class="z-10 flex flex-col p-4 max-h-screen">
       <div
-        class="flex flex-col space-y-2.5 py-7.5 rounded-2.5xl bg-brand-100 max-h-full"
+        class="flex flex-col space-y-3 py-7.5 rounded-2.5xl bg-white max-h-full"
       >
         <h2 class="text-2xl font-semibold mx-4">New contractor</h2>
-        <div
-          class="flex flex-col space-y-2.5 px-4 overflow-scroll scroll-hidden"
-        >
+        <div class="flex flex-col space-y-3 px-4 overflow-scroll scroll-hidden">
           <TextInput
             name="name"
             label="Name"
@@ -56,12 +54,12 @@ const closeContractorModal = () => store.dispatch("CLOSE_CONTRACTOR_MODAL");
           <button
             @click="closeContractorModal"
             type="button"
-            class="py-3.5 border border-brand-400 flex-1 rounded-xl"
+            class="py-3.5 border border-brand-100 flex-1 rounded-2.5xl text-brand-200"
           >
             Cancel
           </button>
           <button
-            class="py-3.5 border border-brand-200 flex-1 rounded-xl bg-brand-200 text-white"
+            class="py-3.5 border-none flex-1 rounded-2.5xl bg-juicyblue-100 text-white"
           >
             Save
           </button>

@@ -71,9 +71,9 @@ function scrollHandler(evt) {
   >
     <form class="flex flex-col text-brand-300 space-y-10">
       <h1 class="text-3xl font-bold">Invoice</h1>
-      <div class="flex flex-col space-y-2.5">
+      <div class="flex flex-col space-y-3">
         <h2 class="text-2xl font-semibold">Invoice information</h2>
-        <fieldset id="invoice-fields" class="space-y-2.5">
+        <fieldset id="invoice-fields" class="space-y-3">
           <TextInput
             name="invoice-name"
             label="Invoice name"
@@ -98,7 +98,7 @@ function scrollHandler(evt) {
         </fieldset>
       </div>
 
-      <div class="flex flex-col space-y-2.5">
+      <div class="flex flex-col space-y-3">
         <h2 class="text-2xl font-semibold">Choose contractor</h2>
         <FlatSelect :options="contractors"></FlatSelect>
         <button
@@ -110,7 +110,7 @@ function scrollHandler(evt) {
         </button>
       </div>
 
-      <div class="flex flex-col space-y-2.5">
+      <div class="flex flex-col space-y-3">
         <h2 class="text-2xl font-semibold">Choose client</h2>
         <FlatSelect :options="clients"></FlatSelect>
         <button
