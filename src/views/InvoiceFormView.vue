@@ -5,7 +5,7 @@ import { ref, computed } from "vue";
 import ChevronDown from "@/icons/ChevronDown.vue";
 import ChevronUp from "@/icons/ChevronUp.vue";
 
-import TextArea from "@/components/TextArea.vue";
+import TextForm from "@/components/TextForm.vue";
 import TextInput from "../components/TextInput.vue";
 import DateInput from "../components/DateInput.vue";
 import FlatSelect from "../components/FlatSelect.vue";
@@ -158,10 +158,10 @@ function scrollHandler(evt) {
           <ChevronUp v-if="isTermsOpened"></ChevronUp>
         </button>
         <div v-if="isTermsOpened">
-          <TextArea
+          <TextForm
             name="terms"
             placeholder="Enter terms and conditions"
-          ></TextArea>
+          ></TextForm>
         </div>
       </div>
 

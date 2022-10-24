@@ -72,7 +72,7 @@ const dates = ref(["year", "month", "week", "day"]);
       <button
         disabled
         type="button"
-        class="flex flex-1 py-3.5 justify-center bg-juicyblue-100 border rounded-2.5xl text-white disabled:bg-juicygreen-50"
+        class="flex flex-1 py-3.5 justify-center border-none rounded-2.5xl text-white disabled:bg-juicygreen-50"
       >
         Save
       </button>
