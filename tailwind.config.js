@@ -23,27 +23,29 @@ module.exports = {
         },
       },
       borderRadius: {
-        "2.5xl": "1.25rem",
+        "2.5xl": "1.25rem", //20px
       },
       padding: {
-        3.75: "0.9375rem",
-        4.5: "1.125rem",
-        7.5: "1.875rem",
+        3.75: "0.9375rem", //15px
+        4.5: "1.125rem", //18px
+        7.5: "1.875rem", //30px
         15: "3.75rem",
       },
       spacing: {
-        7.5: "1.875rem",
+        7.5: "1.875rem", //30px
       },
       boxShadow: {
         dark: "0px 4px 16px 0px rgba(68, 64, 234, 0.2);",
         ml: "0px 4px 12px rgba(76, 75, 126, 0.25);",
         "inner-brand": "inset 0px 2px 6px rgba(76, 75, 126, 0.2);",
       },
-      maxHeight: {
-        26.25: "6.5625rem",
+      height: {
+        18.5: "4.625rem", //74px
+        42: "10.5rem", //168px
       },
     },
   },
+
   plugins: [
     require("@tailwindcss/typography"),
     require("@tailwindcss/forms"),
