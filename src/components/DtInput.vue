@@ -4,18 +4,21 @@ import { reactive, computed, defineProps } from "vue";
 const state = reactive({
   currentSection: null,
   reveseFocus: false,
+  date: null,
 });
 
 const props = defineProps(["modelValue"]);
 
-const day = computed(() => {
-  return props.modelValue ? props.modelValue.getDate() : null;
+const day = computed({
+  get() {
+    return props.modelValue?.day;
+  },
 });
 const month = computed(() => {
-  return props.modelValue ? props.modelValue.getMonth() + 1 : null;
+  return props.modelValue?.month;
 });
 const year = computed(() => {
-  return props.modelValue ? props.modelValue.getFullYear() : null;
+  return props.modelValue?.year;
 });
 
 window.addEventListener("keydown", (evt) => {
@@ -73,21 +76,21 @@ function decrementSelection(evt) {
         @click="(evt) => onClick(evt, 0)"
         :class="{ 'selected bg-brand-50': state.currentSection === 0 }"
         class="day"
-        >{{ `0${day}`.slice(-2) || "__" }}</span
+        >{{ day ? `0${day}`.slice(-2) : "__" }}</span
       >
       <span>-</span>
       <span
         @click="(evt) => onClick(evt, 1)"
         :class="{ 'selected bg-brand-50': state.currentSection === 1 }"
         class="month"
-        >{{ `0${month}`.slice(-2) || "__" }}</span
+        >{{ month ? `0${month}`.slice(-2) : "__" }}</span
       >
       <span>-</span>
       <span
         @click="(evt) => onClick(evt, 2)"
         :class="{ 'selected bg-brand-50': state.currentSection === 2 }"
         class="year"
-        >{{ `000${year}`.slice(-4) || "____" }}</span
+        >{{ year ? `000${year}`.slice(-4) : "____" }}</span
       >
     </div>
   </div>

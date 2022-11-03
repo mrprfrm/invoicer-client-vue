@@ -12,30 +12,28 @@ describe("Pick options tests without initial value", () => {
     });
   });
 
-  it("Selecting day option should update whole date value", async () => {
+  it("Selecting day option should update only day section", async () => {
     await wrapper
       .findAll(".scrollpicker")[0]
       .findAll("button")[9]
       .trigger("click");
-    expect(wrapper.vm.value.getDate()).toBe(10);
+    expect(wrapper.vm.value.day).toBe(10);
   });
 
-  it("Selecting month option should update whole date value", async () => {
+  it("Selecting month option should update only month section", async () => {
     await wrapper
       .findAll(".scrollpicker")[1]
       .findAll("button")[3]
       .trigger("click");
-    // month should be equal 3 instead of 4
-    // getMonth returns month index instead of value
-    expect(wrapper.vm.value.getMonth()).toBe(3);
+    expect(wrapper.vm.value.month).toBe(4);
   });
 
-  it("Selecting year option should update whole date value", async () => {
+  it("Selecting year option should update only year section", async () => {
     await wrapper
       .findAll(".scrollpicker")[2]
       .findAll("button")[9]
       .trigger("click");
-    expect(wrapper.vm.value.getFullYear()).toBe(new Date().getFullYear() - 9);
+    expect(wrapper.vm.value.year).toBe(new Date().getFullYear() - 9);
   });
 });
 
@@ -46,7 +44,7 @@ describe("Pick options tests with initial value", () => {
     wrapper = mount({
       components: { DatePicker },
       template: `<DatePicker v-model="value" />`,
-      data: () => ({ value: new Date("2010-04-01") }),
+      data: () => ({ value: { day: 1, month: 4, year: 2010 } }),
     });
   });
 
@@ -55,7 +53,7 @@ describe("Pick options tests with initial value", () => {
       .findAll(".scrollpicker")[0]
       .findAll("button")[9]
       .trigger("click");
-    expect(wrapper.vm.value.toISOString()).toBe("2010-04-10T00:00:00.000Z");
+    expect(wrapper.vm.value).toStrictEqual({ day: 10, month: 4, year: 2010 });
   });
 
   it("Selecting month option should update only month", async () => {
@@ -63,7 +61,7 @@ describe("Pick options tests with initial value", () => {
       .findAll(".scrollpicker")[1]
       .findAll("button")[6]
       .trigger("click");
-    expect(wrapper.vm.value.toISOString()).toBe("2010-07-01T00:00:00.000Z");
+    expect(wrapper.vm.value).toStrictEqual({ day: 1, month: 7, year: 2010 });
   });
 
   it("Selecting year option should update only year", async () => {
@@ -72,8 +70,8 @@ describe("Pick options tests with initial value", () => {
       .findAll("button")[9]
       .trigger("click");
     // value should be equal 2013-04-01 if current year 2022
-    expect(wrapper.vm.value.getDate()).toBe(1);
-    expect(wrapper.vm.value.getMonth()).toBe(3);
-    expect(wrapper.vm.value.getFullYear()).toBe(new Date().getFullYear() - 9);
+    expect(wrapper.vm.value.day).toBe(1);
+    expect(wrapper.vm.value.month).toBe(4);
+    expect(wrapper.vm.value.year).toBe(new Date().getFullYear() - 9);
   });
 });

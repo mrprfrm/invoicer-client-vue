@@ -4,7 +4,8 @@ import { ref } from "vue";
 import DatePicker from "@/components/DatePicker";
 import DtInput from "@/components/DtInput";
 
-const value = ref(new Date());
+/* const value = ref({ day: 5, month: 2, year: 2020 }); */
+const value = ref(null);
 </script>
 
 <template>

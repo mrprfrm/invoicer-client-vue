@@ -30,36 +30,32 @@ const pickerKey = computed(() => {
 
 const day = computed({
   get() {
-    return props.modelValue ? props.modelValue.getDate() - 1 : 0;
+    return props.modelValue?.day - 1 || 0;
   },
   set(newValue) {
-    const dt = props.modelValue ? new Date(props.modelValue) : new Date();
-    dt.setDate(newValue + 1);
-    emit("update:modelValue", dt);
+    emit("update:modelValue", { ...props.modelValue, day: newValue + 1 });
   },
 });
 
 const month = computed({
   get() {
-    return props.modelValue ? props.modelValue.getMonth() - 1 : 0;
+    return props.modelValue?.month - 1 || 0;
   },
   set(newValue) {
-    const dt = props.modelValue ? new Date(props.modelValue) : new Date();
-    // we don't need to increase month index on 1
-    // because month in date objects starts from 0
-    dt.setMonth(newValue);
-    emit("update:modelValue", dt);
+    emit("update:modelValue", {
+      ...props.modelValue,
+      month: newValue + 1,
+    });
   },
 });
 
 const year = computed({
   get() {
-    return props.modelValue ? years.indexOf(props.modelValue.getFullYear()) : 0;
+    const yearIndex = years.indexOf(props.modelValue?.year);
+    return yearIndex >= 0 ? yearIndex : 0;
   },
   set(newValue) {
-    const dt = props.modelValue ? new Date(props.modelValue) : new Date();
-    dt.setFullYear(years[newValue]);
-    emit("update:modelValue", dt);
+    emit("update:modelValue", { ...props.modelValue, year: years[newValue] });
   },
 });
 </script>
