@@ -6,13 +6,12 @@ import ChevronDown from "@/icons/ChevronDown.vue";
 import ChevronUp from "@/icons/ChevronUp.vue";
 
 import TextForm from "@/components/TextForm.vue";
-import TextInput from "../components/TextInput.vue";
-import DateInput from "../components/DateInput.vue";
-import FlatSelect from "../components/FlatSelect.vue";
-import ContractorModal from "../components/ContractorModal.vue";
-import ClientModal from "../components/ClientModal.vue";
-import ServiceCard from "../components/ServiceCard.vue";
-import ServiceForm from "../components/ServiceForm.vue";
+import DateField from "@/components/DateField.vue";
+import FlatSelect from "@/components/FlatSelect.vue";
+import ContractorModal from "@/components/ContractorModal.vue";
+import ClientModal from "@/components/ClientModal.vue";
+import ServiceCard from "@/components/ServiceCard.vue";
+import ServiceForm from "@/components/ServiceForm.vue";
 
 const store = useStore();
 
@@ -76,28 +75,26 @@ function scrollHandler(evt) {
       <h1 class="text-3xl font-bold">Invoice</h1>
       <div class="flex flex-col space-y-3">
         <h2 class="text-2xl font-semibold">Invoice information</h2>
-        <fieldset id="invoice-fields" class="space-y-3">
-          <TextInput
-            name="invoice-name"
-            label="Invoice name"
-            placeholder="Enter name"
-          ></TextInput>
-          <DateInput
-            name="invoice-date"
-            label="Invoice date"
-            placeholder="Enter date"
-            v-model="date"
-          ></DateInput>
-          <TextInput
-            name="contract-name"
-            label="Contract name"
-            placeholder="Enter name"
-          ></TextInput>
-          <DateInput
-            name="contract-name"
-            label="Contract date"
-            placeholder="Enter date"
-          ></DateInput>
+        <fieldset id="invoice-fields" class="space-y-3 flex flex-col">
+          <div class="relative flex flex-col">
+            <label>Invoice name</label>
+            <input type="text" placeholder="Enter name" />
+          </div>
+
+          <div class="space-y-1.5">
+            <label>Invoice date</label>
+            <DateField></DateField>
+          </div>
+
+          <div class="relative flex flex-col">
+            <label>Contract name</label>
+            <input type="text" placeholder="Enter name" />
+          </div>
+
+          <div class="space-y-1.5">
+            <label>Contract date</label>
+            <DateField></DateField>
+          </div>
         </fieldset>
       </div>
 

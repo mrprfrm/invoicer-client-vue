@@ -342,10 +342,10 @@ function enableInputBlur() {
       v-show="isFocused && isOpened"
       @mousedown="disableInputBlur"
       @mouseup="enableInputBlur"
-      class="z-20 absolute top-full flex mt-2 p-7.5 space-x-7.5 bg-white border-none rounded-xl shadow-dark before:absolute before:inset-0 before:from-white before:via-white before:bg-gradient-to-b before:bottom-auto before:h-14 before:rounded-xl after:absolute after:inset-0 after:from-white after:via-white after:bg-gradient-to-t after:top-auto after:h-14 after:rounded-xl"
+      class="z-20 absolute top-full flex mt-2 p-7.5 space-x-7.5 bg-white border-none rounded-xl shadow-dark"
     >
       <div
-        class="datepicker-days flex flex-col max-h-26.25 space-y-6 overflow-scroll scroll-hidden"
+        class="datepicker-days relative flex flex-col max-h-26.25 space-y-6 overflow-scroll scroll-hidden"
       >
         <button
           v-for="i in 31"

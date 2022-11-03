@@ -9,7 +9,7 @@ const dates = ref(["year", "month", "week", "day"]);
 </script>
 
 <template>
-  <from
+  <form
     class="pt-6 pb-5 px-4 space-y-3 rounded-2.5xl text-brand-300 bg-brand-gradient"
   >
     <TextInput
@@ -77,5 +77,5 @@ const dates = ref(["year", "month", "week", "day"]);
         Save
       </button>
     </div>
-  </from>
+  </form>
 </template>
