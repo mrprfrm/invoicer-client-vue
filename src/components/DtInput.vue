@@ -1,5 +1,15 @@
 <script setup>
-import { reactive, computed, defineProps } from "vue";
+import { reactive, computed, defineProps, defineEmits } from "vue";
+
+const dateValues = {
+  day: { max: 31, min: 1, initial: { min: 1, max: 31 } },
+  month: { max: 12, min: 1, initial: { min: 1, max: 12 } },
+  year: {
+    max: 9999,
+    min: 1,
+    initial: { min: new Date().getFullYear(), max: new Date().getFullYear() },
+  },
+};
 
 const state = reactive({
   currentSection: null,
@@ -8,6 +18,7 @@ const state = reactive({
 });
 
 const props = defineProps(["modelValue"]);
+const emit = defineEmits(["update:modelValue"]);
 
 const day = computed({
   get() {
@@ -43,6 +54,32 @@ function onClick(evt, idx) {
   state.reveseFocus = false;
 }
 
+function incrementValue() {
+  const data = { ...props.modelValue };
+  const sectionKey = Object.keys(dateValues)[state.currentSection];
+  if (!data[sectionKey]) {
+    data[sectionKey] = dateValues[sectionKey].initial.min;
+  } else if (data[sectionKey] >= dateValues[sectionKey].max) {
+    data[sectionKey] = dateValues[sectionKey].min;
+  } else {
+    data[sectionKey] += 1;
+  }
+  emit("update:modelValue", data);
+}
+
+function decrementValue() {
+  const data = { ...props.modelValue };
+  const sectionKey = Object.keys(dateValues)[state.currentSection];
+  if (!data[sectionKey]) {
+    data[sectionKey] = dateValues[sectionKey].initial.max;
+  } else if (data[sectionKey] <= dateValues[sectionKey].min) {
+    data[sectionKey] = dateValues[sectionKey].max;
+  } else {
+    data[sectionKey] -= 1;
+  }
+  emit("update:modelValue", data);
+}
+
 function incrementSelection(evt) {
   if (state.currentSection < 2) {
     evt.preventDefault();
@@ -63,8 +100,10 @@ function decrementSelection(evt) {
     @click="(evt) => onClick(evt, 0)"
     @focus="onFocus"
     @blur="onBlur"
-    @keydown.right="incrementSelection"
-    @keydown.left="decrementSelection"
+    @keydown.up.prevent="incrementValue"
+    @keydown.down.prevent="decrementValue"
+    @keydown.right.prevent="incrementSelection"
+    @keydown.left.prevent="decrementSelection"
     @keydown.tab.exact="incrementSelection"
     @keydown.shift.tab="decrementSelection"
     :class="{ 'text-brand-100': !(day || month || year) }"

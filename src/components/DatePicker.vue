@@ -19,7 +19,6 @@ const months = [
   "December",
 ];
 const currentYear = new Date().getFullYear();
-const years = [...Array(30).keys()].map((itm) => currentYear - itm);
 
 const props = defineProps(["modelValue"]);
 const emit = defineEmits(["update:modelValue"]);
@@ -49,13 +48,25 @@ const month = computed({
   },
 });
 
+const years = computed(() => {
+  return [...Array(10).keys()].map((itm) => currentYear - 5 + itm);
+});
+
 const year = computed({
   get() {
-    const yearIndex = years.indexOf(props.modelValue?.year);
-    return yearIndex >= 0 ? yearIndex : 0;
+    const year = props.modelValue?.year || currentYear - 5;
+    if (years.value.includes(year)) {
+      return years.value.indexOf(year);
+    } else if (year > years.value[years.value.length - 1]) {
+      return years.value.length - 1;
+    }
+    return 0;
   },
   set(newValue) {
-    emit("update:modelValue", { ...props.modelValue, year: years[newValue] });
+    emit("update:modelValue", {
+      ...props.modelValue,
+      year: years.value[newValue],
+    });
   },
 });
 </script>

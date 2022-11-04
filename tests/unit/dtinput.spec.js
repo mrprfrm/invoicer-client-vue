@@ -1,4 +1,4 @@
-import { shallowMount } from "@vue/test-utils";
+import { mount, shallowMount } from "@vue/test-utils";
 import DtInput from "@/components/DtInput.vue";
 
 describe("Select date parts with tab press tests", () => {
@@ -100,5 +100,59 @@ describe("Select date parts with arrows keys press tests", () => {
 
     await wrapper.trigger("keydown.left");
     expect(wrapper.find(".month").classes("selected")).toBe(true);
+  });
+});
+
+describe("Change date using arrows tests without initial value", () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = mount({
+      components: { DtInput },
+      template: `<DtInput v-model="value" />`,
+      data: () => ({ value: null }),
+    });
+  });
+
+  it("Up key press on focused input should increase the value of the day on 1", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.up");
+    expect(wrapper.vm.value.day).toBe(1);
+  });
+
+  it("Down key press on focused input should set the value of the day as the last day number", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.down");
+    expect(wrapper.vm.value.day).toBe(31);
+  });
+
+  it("Up key press with seslected month section should increase the value of the month on 1", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.tab");
+    await wrapper.trigger("keydown.up");
+    expect(wrapper.vm.value.month).toBe(1);
+  });
+
+  it("Down key press with selected month section should set the value of the month as the last month number", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.tab");
+    await wrapper.trigger("keydown.down");
+    expect(wrapper.vm.value.month).toBe(12);
+  });
+
+  it("Up key press with seslected year section should increase the value of the year on 1", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.tab");
+    await wrapper.trigger("keydown.tab");
+    await wrapper.trigger("keydown.up");
+    expect(wrapper.vm.value.year).toBe(new Date().getFullYear());
+  });
+
+  it("Down key press with selected year section should set the value of the year as the current year number", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.tab");
+    await wrapper.trigger("keydown.tab");
+    await wrapper.trigger("keydown.down");
+    expect(wrapper.vm.value.year).toBe(new Date().getFullYear());
   });
 });

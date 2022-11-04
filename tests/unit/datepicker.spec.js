@@ -33,7 +33,7 @@ describe("Pick options tests without initial value", () => {
       .findAll(".scrollpicker")[2]
       .findAll("button")[9]
       .trigger("click");
-    expect(wrapper.vm.value.year).toBe(new Date().getFullYear() - 9);
+    expect(wrapper.vm.value.year).toBe(new Date().getFullYear() + 4);
   });
 });
 
@@ -69,9 +69,9 @@ describe("Pick options tests with initial value", () => {
       .findAll(".scrollpicker")[2]
       .findAll("button")[9]
       .trigger("click");
-    // value should be equal 2013-04-01 if current year 2022
+    // value should be equal 2031-04-01 if current year 2022
     expect(wrapper.vm.value.day).toBe(1);
     expect(wrapper.vm.value.month).toBe(4);
-    expect(wrapper.vm.value.year).toBe(new Date().getFullYear() - 9);
+    expect(wrapper.vm.value.year).toBe(new Date().getFullYear() + 9);
   });
 });

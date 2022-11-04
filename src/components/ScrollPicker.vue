@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps, defineEmits, reactive, onMounted } from "vue";
+import { ref, defineProps, defineEmits, reactive, onMounted, watch } from "vue";
 
 const container = ref(null);
 const values = ref([]);
@@ -18,6 +18,16 @@ onMounted(() => {
     container.value.offsetTop -
     44;
 });
+
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    container.value.scrollTop =
+      values.value[newValue >= 0 ? newValue : 0].offsetTop -
+      container.value.offsetTop -
+      44;
+  }
+);
 
 function onClick(evt, idx) {
   container.value.scrollTop =
