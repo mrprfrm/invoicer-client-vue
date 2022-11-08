@@ -25,9 +25,11 @@ const day = computed({
     return props.modelValue?.day;
   },
 });
+
 const month = computed(() => {
   return props.modelValue?.month;
 });
+
 const year = computed(() => {
   return props.modelValue?.year;
 });
@@ -52,6 +54,15 @@ function onClick(evt, idx) {
   evt.stopPropagation();
   state.currentSection = idx;
   state.reveseFocus = false;
+}
+
+function cleanValue() {
+  const data = { ...props.modelValue };
+  const sectionKey = Object.keys(dateValues)[state.currentSection];
+  if (data[sectionKey]) {
+    data[sectionKey] = null;
+    emit("update:modelValue", data);
+  }
 }
 
 function incrementValue() {
@@ -106,6 +117,7 @@ function decrementSelection(evt) {
     @keydown.left.prevent="decrementSelection"
     @keydown.tab.exact="incrementSelection"
     @keydown.shift.tab="decrementSelection"
+    @keydown.backspace="cleanValue"
     :class="{ 'text-brand-100': !(day || month || year) }"
     tabindex="0"
     class="dateinput relative flex py-5 px-4.5 shadow-inner-brand rounded-2.5xl cursor-default focus:ring-1 focus:ring-juicyblue-100 outline-none"

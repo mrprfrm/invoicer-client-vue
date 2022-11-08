@@ -156,3 +156,128 @@ describe("Change date using arrows tests without initial value", () => {
     expect(wrapper.vm.value.year).toBe(new Date().getFullYear());
   });
 });
+
+describe("Change date using arrows tests with initial value", () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = mount({
+      components: { DtInput },
+      template: `<DtInput v-model="value" />`,
+      data: () => ({ value: { day: 1, month: 4, year: 2010 } }),
+    });
+  });
+
+  it("Up key press on focused input should increase the value of the day on 1", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.up");
+    expect(wrapper.vm.value).toStrictEqual({
+      day: 2,
+      month: 4,
+      year: 2010,
+    });
+  });
+
+  it("Down key press on focused input should set the value of the day as the last day number", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.down");
+    expect(wrapper.vm.value).toStrictEqual({
+      day: 31,
+      month: 4,
+      year: 2010,
+    });
+  });
+
+  it("Up key press with seslected month section should increase the value of the month on 1", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.tab");
+    await wrapper.trigger("keydown.up");
+    expect(wrapper.vm.value).toStrictEqual({
+      day: 1,
+      month: 5,
+      year: 2010,
+    });
+  });
+
+  it("Down key press with selected month section should set the value of the month as the last month number", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.tab");
+    await wrapper.trigger("keydown.down");
+    expect(wrapper.vm.value).toStrictEqual({
+      day: 1,
+      month: 3,
+      year: 2010,
+    });
+  });
+
+  it("Up key press with seslected year section should increase the value of the year on 1", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.tab");
+    await wrapper.trigger("keydown.tab");
+    await wrapper.trigger("keydown.up");
+    expect(wrapper.vm.value).toStrictEqual({
+      day: 1,
+      month: 4,
+      year: 2011,
+    });
+  });
+
+  it("Down key press with selected year section should set the value of the year as the current year number", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.tab");
+    await wrapper.trigger("keydown.tab");
+    await wrapper.trigger("keydown.down");
+    expect(wrapper.vm.value).toStrictEqual({
+      day: 1,
+      month: 4,
+      year: 2009,
+    });
+  });
+});
+
+describe("Clean date sections tests", () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = mount({
+      components: { DtInput },
+      template: `<DtInput v-model="value" />`,
+      data: () => ({ value: { day: 1, month: 4, year: 2010 } }),
+    });
+  });
+
+  it("Backspace key press with selected day section should delete day value", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.backspace");
+    expect(wrapper.vm.value).toStrictEqual({
+      day: null,
+      month: 4,
+      year: 2010,
+    });
+  });
+
+  it("Backspace key press with selected month section should delete month value", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.tab");
+    await wrapper.trigger("keydown.backspace");
+    expect(wrapper.vm.value).toStrictEqual({
+      day: 1,
+      month: null,
+      year: 2010,
+    });
+  });
+
+  it("Backspace key press with selected month section should delete month value", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.tab");
+    await wrapper.trigger("keydown.tab");
+    await wrapper.trigger("keydown.backspace");
+    expect(wrapper.vm.value).toStrictEqual({
+      day: 1,
+      month: 4,
+      year: null,
+    });
+  });
+});
+
+describe("Input date tests without initial value", () => {});

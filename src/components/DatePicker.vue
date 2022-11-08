@@ -29,7 +29,8 @@ const pickerKey = computed(() => {
 
 const day = computed({
   get() {
-    return props.modelValue?.day - 1 || 0;
+    const value = props.modelValue?.day;
+    return value ? value - 1 : 0;
   },
   set(newValue) {
     emit("update:modelValue", { ...props.modelValue, day: newValue + 1 });
@@ -38,7 +39,8 @@ const day = computed({
 
 const month = computed({
   get() {
-    return props.modelValue?.month - 1 || 0;
+    const value = props.modelValue?.month;
+    return value ? value - 1 : 0;
   },
   set(newValue) {
     emit("update:modelValue", {

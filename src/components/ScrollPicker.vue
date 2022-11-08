@@ -4,6 +4,7 @@ import { ref, defineProps, defineEmits, reactive, onMounted, watch } from "vue";
 const container = ref(null);
 const values = ref([]);
 const state = reactive({
+  currentIndex: null,
   ignoreScroll: false,
 });
 
@@ -29,10 +30,19 @@ watch(
   }
 );
 
-function onClick(evt, idx) {
+watch(
+  () => state.currentIndex,
+  (newValue) => {
+    if (newValue !== props.modelValue) {
+      emit("update:modelValue", newValue);
+    }
+  }
+);
+
+function onClick(evt) {
   container.value.scrollTop =
     evt.target.offsetTop - container.value.offsetTop - 44;
-  emit("update:modelValue", idx);
+  emit("update:modelValue", parseInt(evt.target.dataset.index));
 }
 
 function onScroll() {
@@ -46,9 +56,7 @@ function onScroll() {
   isScrolling = setTimeout(function () {
     state.ignoreScroll = true;
     const valueIndex = Math.round(container.value.scrollTop / 44);
-    container.value.scrollTop =
-      values.value[valueIndex].offsetTop - container.value.offsetTop - 44;
-    emit("update:modelValue", valueIndex);
+    state.currentIndex = valueIndex;
   }, 100);
 }
 </script>
@@ -60,8 +68,9 @@ function onScroll() {
     ref="container"
   >
     <button
-      @click="(evt) => onClick(evt, index)"
+      @click="onClick"
       :key="`${parentKey}-${value}`"
+      :data-index="index"
       v-for="(value, index) in props.values"
       tabindex="-1"
       class="first:mt-11 last:!mb-11"
