@@ -280,4 +280,153 @@ describe("Clean date sections tests", () => {
   });
 });
 
-describe("Input date tests without initial value", () => {});
+describe("Input date value tests without initial value", () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = mount({
+      components: { DtInput },
+      template: `<DtInput v-model="value" />`,
+      data: () => ({ value: null }),
+    });
+  });
+
+  it("Input 00 should set day value as 1", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown", { key: "0", keyCode: 48 });
+    await wrapper.trigger("keydown", { key: "0", keyCode: 48 });
+    expect(wrapper.vm.value).toStrictEqual({ day: 1 });
+  });
+
+  it("Input 9 should set day value as 9", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown", { key: "9", keyCode: 48 + 9 });
+    expect(wrapper.vm.value).toStrictEqual({ day: 9 });
+  });
+
+  it("Input 24 should set day value as 24", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown", { key: "2", keyCode: 48 + 2 });
+    await wrapper.trigger("keydown", { key: "4", keyCode: 48 + 4 });
+    expect(wrapper.vm.value).toStrictEqual({ day: 24 });
+  });
+
+  it("Input 34 should set day value as 31", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown", { key: "3", keyCode: 48 + 3 });
+    await wrapper.trigger("keydown", { key: "4", keyCode: 48 + 4 });
+    expect(wrapper.vm.value).toStrictEqual({ day: 31 });
+  });
+
+  it("Input 46 should set day value as 4 and month value as 6", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown", { key: "4", keyCode: 48 + 4 });
+    await wrapper.trigger("keydown", { key: "6", keyCode: 48 + 6 });
+    expect(wrapper.vm.value).toStrictEqual({ day: 4, month: 6 });
+  });
+
+  it("Input 588 should set day value as 5, month value as 8 and year value as 8", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown", { key: "5", keyCode: 48 + 8 });
+    await wrapper.trigger("keydown", { key: "8", keyCode: 48 + 8 });
+    await wrapper.trigger("keydown", { key: "8", keyCode: 48 + 8 });
+    expect(wrapper.vm.value).toStrictEqual({ day: 5, month: 8, year: 8 });
+  });
+
+  it("Input 2437 should set day value as 24, month value as 3 and year value as 7", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown", { key: "2", keyCode: 48 + 2 });
+    await wrapper.trigger("keydown", { key: "4", keyCode: 48 + 4 });
+    await wrapper.trigger("keydown", { key: "3", keyCode: 48 + 3 });
+    await wrapper.trigger("keydown", { key: "7", keyCode: 48 + 7 });
+    expect(wrapper.vm.value).toStrictEqual({ day: 24, month: 3, year: 7 });
+  });
+
+  it("Input 28043 should set day value as 28, month value as 4 and year value as 3", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown", { key: "2", keyCode: 48 + 2 });
+    await wrapper.trigger("keydown", { key: "8", keyCode: 48 + 8 });
+    await wrapper.trigger("keydown", { key: "0", keyCode: 48 });
+    await wrapper.trigger("keydown", { key: "4", keyCode: 48 + 4 });
+    await wrapper.trigger("keydown", { key: "3", keyCode: 48 + 3 });
+    expect(wrapper.vm.value).toStrictEqual({ day: 28, month: 4, year: 3 });
+  });
+
+  it("Input 24004 should set day value as 24, month value as 1 and year value as 4", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown", { key: "2", keyCode: 48 + 2 });
+    await wrapper.trigger("keydown", { key: "4", keyCode: 48 + 4 });
+    await wrapper.trigger("keydown", { key: "0", keyCode: 48 });
+    await wrapper.trigger("keydown", { key: "0", keyCode: 48 });
+    await wrapper.trigger("keydown", { key: "4", keyCode: 48 + 4 });
+    expect(wrapper.vm.value).toStrictEqual({ day: 24, month: 1, year: 4 });
+  });
+
+  it("Input 37944 should set day value as 31, month value as 9 and year value as 44", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown", { key: "3", keyCode: 48 + 3 });
+    await wrapper.trigger("keydown", { key: "7", keyCode: 48 + 7 });
+    await wrapper.trigger("keydown", { key: "9", keyCode: 48 + 9 });
+    await wrapper.trigger("keydown", { key: "4", keyCode: 48 + 4 });
+    await wrapper.trigger("keydown", { key: "4", keyCode: 48 + 4 });
+    expect(wrapper.vm.value).toStrictEqual({ day: 31, month: 9, year: 44 });
+  });
+
+  it("Input 38169 should set day value as 31, month value as 12 and year value as 9", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown", { key: "3", keyCode: 48 + 3 });
+    await wrapper.trigger("keydown", { key: "8", keyCode: 48 + 8 });
+    await wrapper.trigger("keydown", { key: "1", keyCode: 48 + 1 });
+    await wrapper.trigger("keydown", { key: "6", keyCode: 48 + 6 });
+    await wrapper.trigger("keydown", { key: "9", keyCode: 48 + 9 });
+    expect(wrapper.vm.value).toStrictEqual({ day: 31, month: 12, year: 9 });
+  });
+
+  it("Input 642743 sholud set day value as 6, month value as 4 and year value as 2743", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown", { key: "6", keyCode: 48 + 5 });
+    await wrapper.trigger("keydown", { key: "4", keyCode: 48 + 4 });
+    await wrapper.trigger("keydown", { key: "2", keyCode: 48 + 2 });
+    await wrapper.trigger("keydown", { key: "7", keyCode: 48 + 7 });
+    await wrapper.trigger("keydown", { key: "4", keyCode: 48 + 4 });
+    await wrapper.trigger("keydown", { key: "3", keyCode: 48 + 3 });
+    expect(wrapper.vm.value).toStrictEqual({ day: 6, month: 4, year: 2743 });
+  });
+
+  it("input 420000 should set day value as 4, month value as 2 and year value as 1", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown", { key: "4", keyCode: 48 + 4 });
+    await wrapper.trigger("keydown", { key: "2", keyCode: 48 + 2 });
+    await wrapper.trigger("keydown", { key: "0", keyCode: 48 });
+    await wrapper.trigger("keydown", { key: "0", keyCode: 48 });
+    await wrapper.trigger("keydown", { key: "0", keyCode: 48 });
+    await wrapper.trigger("keydown", { key: "0", keyCode: 48 });
+    expect(wrapper.vm.value).toStrictEqual({ day: 4, month: 2, year: 1 });
+  });
+
+  it("Input 58000014 should set day value as 5, month value as 8 and year value as 4", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown", { key: "5", keyCode: 48 + 5 });
+    await wrapper.trigger("keydown", { key: "8", keyCode: 48 + 8 });
+    await wrapper.trigger("keydown", { key: "0", keyCode: 48 });
+    await wrapper.trigger("keydown", { key: "0", keyCode: 48 });
+    await wrapper.trigger("keydown", { key: "0", keyCode: 48 });
+    await wrapper.trigger("keydown", { key: "0", keyCode: 48 });
+    await wrapper.trigger("keydown", { key: "4", keyCode: 48 + 4 });
+    expect(wrapper.vm.value).toStrictEqual({ day: 5, month: 8, year: 14 });
+  });
+
+  it("Input 9499998 should set day value as 9, month value as 4 and year value as 9998 ", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown", { key: "9", keyCode: 48 + 9 });
+    await wrapper.trigger("keydown", { key: "4", keyCode: 48 + 4 });
+    await wrapper.trigger("keydown", { key: "9", keyCode: 48 + 9 });
+    await wrapper.trigger("keydown", { key: "9", keyCode: 48 + 9 });
+    await wrapper.trigger("keydown", { key: "9", keyCode: 48 + 9 });
+    await wrapper.trigger("keydown", { key: "9", keyCode: 48 + 9 });
+    await wrapper.trigger("keydown", { key: "8", keyCode: 48 + 8 });
+    expect(wrapper.vm.value).toStrictEqual({ day: 9, month: 4, year: 9998 });
+  });
+});
+
+describe("Input date value tests with initial value", () => {});
