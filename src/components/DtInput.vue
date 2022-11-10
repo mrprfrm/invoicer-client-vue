@@ -3,6 +3,7 @@ import { reactive, computed, defineProps, defineEmits, watch } from "vue";
 
 import { isNull } from "../utils.js";
 
+/* Date object configuration */
 const dateValues = {
   day: { max: 31, min: 1, initial: { min: 1, max: 31 } },
   month: { max: 12, min: 1, initial: { min: 1, max: 12 } },
@@ -57,12 +58,19 @@ watch(
     const sectionKey = Object.keys(dateValues)[state.currentSection];
     const sectionValues = dateValues[sectionKey];
     const maxInputLen = sectionValues.max.toString().length;
+    const isYearSection = state.currentSection === 2;
 
-    if (state.currentSection === 2 && value >= sectionValues.max) {
-      data[sectionKey] = parseInt(value.slice(-4));
+    if (isYearSection && value >= sectionValues.max) {
+      /* If year section selected and value bigger than 9999 */
+      data.year = parseInt(value.slice(-4));
+    } else if (isYearSection && !+value) {
+      /* If year section selected and value contains only zeros */
+      data.year = parseInt(value.slice(-4));
     } else if (value >= sectionValues.max) {
+      /* If value bigger than section max value */
       data[sectionKey] = sectionValues.max;
-    } else if (["00"].includes(value)) {
+    } else if (value.length > 1 && !+value) {
+      /* If value contains only zeros */
       data[sectionKey] = sectionValues.min;
     } else {
       data[sectionKey] = parseInt(value);
@@ -70,17 +78,21 @@ watch(
 
     emit("update:modelValue", data);
 
-    if (state.currentSection == 2) {
+    if (isYearSection) {
+      /* Do not increment section index if year section selected */
       return;
     }
 
-    if (state.inputValue >= sectionValues.max) {
+    if (value >= sectionValues.max) {
+      /* If value bigger than section max value  */
       state.currentSection += 1;
-    } else if (["00"].includes(state.inputValue)) {
+    } else if (value.length > 1 && !+value) {
+      /* If value contains only zeros */
       state.currentSection += 1;
     } else if (
       (state.inputValue + "0").slice(0, maxInputLen) > sectionValues.max
     ) {
+      /* If potential value bigger than section max value */
       state.currentSection += 1;
     } else if (state.inputValue.length >= maxInputLen) {
       state.currentSection += 1;
@@ -102,6 +114,10 @@ function onFocus() {
 
 function onBlur() {
   state.currentSection = null;
+  if (!isNull(props.modelValue?.year) && !+props.modelValue.year) {
+    const data = { ...props.modelValue, year: 1 };
+    emit("update:modelValue", data);
+  }
 }
 
 function onClick(evt, idx) {
