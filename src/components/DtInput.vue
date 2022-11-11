@@ -3,6 +3,21 @@ import { reactive, computed, defineProps, defineEmits, watch } from "vue";
 
 import { isNull } from "../utils.js";
 
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
 /* Date object configuration */
 const dateValues = {
   day: { max: 31, min: 1, initial: { min: 1, max: 31 } },
@@ -136,6 +151,25 @@ function cleanValue() {
   }
 }
 
+function cleanAll() {
+  const data = { ...props.modelValue };
+  const sectionKey = Object.keys(dateValues)[state.currentSection];
+  data[sectionKey] = null;
+  emit("update:modelValue", null);
+  state.inputValue = "";
+}
+
+function setCurrentDate() {
+  const dt = new Date();
+  const data = {
+    day: dt.getDate(),
+    month: dt.getMonth() + 1,
+    year: dt.getFullYear(),
+  };
+  emit("update:modelValue", data);
+  state.inputValue = "";
+}
+
 function incrementValue() {
   const data = { ...props.modelValue };
   const sectionKey = Object.keys(dateValues)[state.currentSection];
@@ -181,11 +215,51 @@ function onKeyDown(evt) {
     return;
   }
 
-  if (evt.keyCode < 47 || evt.keyCode > 57) {
-    return;
+  if (evt.keyCode > 47 && evt.keyCode < 58) {
+    state.inputValue += evt.key;
+  } else if (evt.keyCode === 67) {
+    cleanAll();
+  } else if (evt.keyCode === 72) {
+    decrementSelection(evt);
+  } else if (evt.keyCode === 74) {
+    decrementValue();
+  } else if (evt.keyCode === 75) {
+    incrementValue();
+  } else if (evt.keyCode === 76) {
+    incrementSelection(evt);
+  } else if (evt.keyCode === 78) {
+    setCurrentDate();
   }
+}
 
-  state.inputValue += evt.key;
+function onPaste(evt) {
+  let dtString = (evt.clipboardData || window.clipboardData).getData("text");
+  if (!isNull(dtString)) {
+    dtString = dtString.replace(/[\s/.,]{1,2}/g, " ");
+
+    let match = /(?<month>\d{1,2})\s(?<day>\d{1,2})\s(?<year>\d{4})/.exec(
+      dtString
+    );
+
+    if (match) {
+      const { month, day, year } = match.groups;
+      emit("update:modelValue", { day, month, year });
+      return;
+    }
+
+    match = /(?<month>\w{3,9})\s(?<day>\d{1,2})\s(?<year>\d{4})/.exec(dtString);
+
+    if (match) {
+      const { month, day, year } = match.groups;
+      const monthsNames = months.map((itm) => itm.slice(0, month.length));
+      const monthIndex = monthsNames.indexOf(month);
+      if (monthIndex === -1) {
+        return;
+      }
+
+      emit("update:modelValue", { day, year, month: parseInt(monthIndex + 1) });
+    }
+  }
 }
 </script>
 
@@ -202,6 +276,7 @@ function onKeyDown(evt) {
     @keydown.shift.tab="decrementSelection"
     @keydown.backspace="cleanValue"
     @keydown.exact="onKeyDown"
+    @paste="onPaste"
     :class="{
       'text-brand-100': isNull(day) && isNull(month) && isNull(year),
     }"

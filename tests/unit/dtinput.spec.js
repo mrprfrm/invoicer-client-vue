@@ -425,7 +425,7 @@ describe("Input date value tests without initial value", () => {
     expect(wrapper.vm.value).toStrictEqual({ day: 5, month: 8, year: 4 });
   });
 
-  it("Input 9499998 should set day value as 9, month value as 4 and year value as 9998 ", async () => {
+  it("Input 9499998 should set day value as 9, month value as 4 and year value as 9998", async () => {
     await wrapper.trigger("focus");
     await wrapper.trigger("keydown", { key: "9", keyCode: 48 + 9 });
     await wrapper.trigger("keydown", { key: "4", keyCode: 48 + 4 });
@@ -438,4 +438,45 @@ describe("Input date value tests without initial value", () => {
   });
 });
 
-describe("Input date value tests with initial value", () => {});
+describe("Clean all tests", () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = mount({
+      components: { DtInput },
+      template: `<DtInput v-model="value" />`,
+      data: () => ({ value: { day: 1, month: 4, year: 2010 } }),
+    });
+  });
+
+  it("c button click sholud clean whole date values", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown", { key: "c", keyCode: 67 });
+    expect(wrapper.vm.value).toBe(null);
+  });
+});
+
+describe("Set current date tests", () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = mount({
+      components: { DtInput },
+      template: `<DtInput v-model="value" />`,
+      data: () => ({ value: null }),
+    });
+  });
+
+  it("n button click sholud set input value as current date", async () => {
+    const dt = new Date();
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown", { key: "n", keyCode: 78 });
+    expect(wrapper.vm.value).toStrictEqual({
+      day: dt.getDate(),
+      month: dt.getMonth() + 1,
+      year: dt.getFullYear(),
+    });
+  });
+});
+
+describe("Paste date string tests", () => {});
