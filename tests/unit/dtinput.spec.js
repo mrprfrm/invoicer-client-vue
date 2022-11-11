@@ -479,4 +479,59 @@ describe("Set current date tests", () => {
   });
 });
 
-describe("Paste date string tests", () => {});
+describe("Paste date string tests", () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = mount({
+      components: { DtInput },
+      template: `<DtInput v-model="value" />`,
+      data: () => ({ value: null }),
+    });
+  });
+
+  it("Paste from clipboard text 2.1.2000 should set day as 1, month as 2 and year as 2000", async () => {
+    await wrapper.trigger("paste", {
+      clipboardData: {
+        getData: () => "2.1.2000",
+      },
+    });
+    expect(wrapper.vm.value).toStrictEqual({ day: 1, month: 2, year: 2000 });
+  });
+
+  it("Paste from clipboard text 02.01.2000 should set day as 1, month as 2 and year as 2000", async () => {
+    await wrapper.trigger("paste", {
+      clipboardData: {
+        getData: () => "02.01.2000",
+      },
+    });
+    expect(wrapper.vm.value).toStrictEqual({ day: 1, month: 2, year: 2000 });
+  });
+
+  it("Paste from clipboard text Feb.01.2000 should set day as 1, month as 2 and year as 2000", async () => {
+    await wrapper.trigger("paste", {
+      clipboardData: {
+        getData: () => "Feb 01, 2000",
+      },
+    });
+    expect(wrapper.vm.value).toStrictEqual({ day: 1, month: 2, year: 2000 });
+  });
+
+  it("Paste from clipboard text Feb 01, 2000 should set day as 1, month as 2 and year as 2000", async () => {
+    await wrapper.trigger("paste", {
+      clipboardData: {
+        getData: () => "Feb 01, 2000",
+      },
+    });
+    expect(wrapper.vm.value).toStrictEqual({ day: 1, month: 2, year: 2000 });
+  });
+
+  it("Paste from clipboard text 2000.02.01 should set day as 1, month as 2 and year as 2000", async () => {
+    await wrapper.trigger("paste", {
+      clipboardData: {
+        getData: () => "2000.02.01",
+      },
+    });
+    expect(wrapper.vm.value).toStrictEqual({ day: 1, month: 2, year: 2000 });
+  });
+});

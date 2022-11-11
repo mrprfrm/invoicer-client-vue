@@ -243,7 +243,23 @@ function onPaste(evt) {
 
     if (match) {
       const { month, day, year } = match.groups;
-      emit("update:modelValue", { day, month, year });
+      emit("update:modelValue", {
+        day: parseInt(day),
+        month: parseInt(month),
+        year: parseInt(year),
+      });
+      return;
+    }
+
+    match = /(?<year>\d{4})\s(?<month>\d{1,2})\s(?<day>\d{1,2})/.exec(dtString);
+
+    if (match) {
+      const { month, day, year } = match.groups;
+      emit("update:modelValue", {
+        day: parseInt(day),
+        month: parseInt(month),
+        year: parseInt(year),
+      });
       return;
     }
 
@@ -257,9 +273,17 @@ function onPaste(evt) {
         return;
       }
 
-      emit("update:modelValue", { day, year, month: parseInt(monthIndex + 1) });
+      emit("update:modelValue", {
+        day: parseInt(day),
+        year: parseInt(year),
+        month: parseInt(monthIndex + 1),
+      });
     }
   }
+}
+
+function onCopy() {
+  navigator.clipboard.writeText(`${month.value}.${day.value}.${year.value}`);
 }
 </script>
 
@@ -277,6 +301,7 @@ function onPaste(evt) {
     @keydown.backspace="cleanValue"
     @keydown.exact="onKeyDown"
     @paste="onPaste"
+    @copy="onCopy"
     :class="{
       'text-brand-100': isNull(day) && isNull(month) && isNull(year),
     }"
