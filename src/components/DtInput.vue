@@ -241,44 +241,40 @@ function onPaste(evt) {
       dtString
     );
 
-    if (match) {
-      const { month, day, year } = match.groups;
-      emit("update:modelValue", {
-        day: parseInt(day),
-        month: parseInt(month),
-        year: parseInt(year),
-      });
+    if (!match) {
+      match = /(?<year>\d{4})\s(?<month>\d{1,2})\s(?<day>\d{1,2})/.exec(
+        dtString
+      );
+    }
+
+    if (!match) {
+      match = /(?<month>\w{3,9})\s(?<day>\d{1,2})\s(?<year>\d{4})/.exec(
+        dtString
+      );
+    }
+
+    if (!match) {
       return;
     }
 
-    match = /(?<year>\d{4})\s(?<month>\d{1,2})\s(?<day>\d{1,2})/.exec(dtString);
+    let { day, month, year } = match.groups;
 
-    if (match) {
-      const { month, day, year } = match.groups;
-      emit("update:modelValue", {
-        day: parseInt(day),
-        month: parseInt(month),
-        year: parseInt(year),
-      });
-      return;
-    }
-
-    match = /(?<month>\w{3,9})\s(?<day>\d{1,2})\s(?<year>\d{4})/.exec(dtString);
-
-    if (match) {
-      const { month, day, year } = match.groups;
-      const monthsNames = months.map((itm) => itm.slice(0, month.length));
-      const monthIndex = monthsNames.indexOf(month);
-      if (monthIndex === -1) {
+    if (!/\d/.test(month)) {
+      month = month.toLowerCase();
+      const monthsNames = months.map((itm) =>
+        itm.slice(0, month.length).toLowerCase()
+      );
+      if (!monthsNames.includes(month)) {
         return;
       }
-
-      emit("update:modelValue", {
-        day: parseInt(day),
-        year: parseInt(year),
-        month: parseInt(monthIndex + 1),
-      });
+      month = monthsNames.indexOf(month) + 1;
     }
+
+    emit("update:modelValue", {
+      day: parseInt(day),
+      month: parseInt(month),
+      year: parseInt(year),
+    });
   }
 }
 
