@@ -1,8 +1,8 @@
 <script setup>
 import { reactive, ref, watch } from "vue";
 
-import DatePicker from "@/components/DatePicker";
-import DtInput from "@/components/DtInput";
+import DatePicker from "@/components/DatePicker.vue";
+import DateInput from "@/components/DateInput.vue";
 
 const field = ref(null);
 const value = ref({ day: 5, month: 2, year: 2020 });
@@ -34,7 +34,7 @@ function onBlur() {
 
 <template>
   <div class="relative" ref="field">
-    <DtInput
+    <DateInput
       @blur="onBlur"
       @focus="state.opened = true"
       @keydown.esc="state.opened = !state.opened"

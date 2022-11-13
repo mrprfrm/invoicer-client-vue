@@ -1,7 +1,7 @@
 <script setup>
-import { ref, defineProps, defineEmits, computed, watch } from "vue";
+import { reactive, computed, defineProps, defineEmits, watch } from "vue";
 
-// Constants
+import { isNull } from "../utils.js";
 
 const months = [
   "January",
@@ -18,378 +18,315 @@ const months = [
   "December",
 ];
 
-const SelectionRange = {
-  DAY: 0,
-  MONTH: 1,
-  YEAR: 2,
+/* Date object configuration */
+const dateValues = {
+  day: { max: 31, min: 1, initial: { min: 1, max: 31 } },
+  month: { max: 12, min: 1, initial: { min: 1, max: 12 } },
+  year: {
+    max: 9999,
+    min: 1,
+    initial: { min: new Date().getFullYear(), max: new Date().getFullYear() },
+  },
 };
 
-// Hooks
+const state = reactive({
+  currentSection: null,
+  inputValue: "",
+  reveseFocus: false,
+  date: null,
+});
 
-const props = defineProps({
-  name: String,
-  label: String,
-  modelValue: String,
-  required: {
-    type: Boolean,
-    default: true,
-  },
-  lastYear: {
-    type: Number,
-    default: new Date().getFullYear(),
-  },
-  yearsNumber: {
-    type: Number,
-    default: 30,
+const props = defineProps(["modelValue", "currentSection"]);
+const emit = defineEmits(["update:modelValue", "update:currentSection"]);
+
+const day = computed({
+  get() {
+    return props.modelValue?.day;
   },
 });
 
-const emit = defineEmits(["update:modelValue"]);
-
-// Reactive data
-
-const input = ref(null);
-
-const isBlurable = ref(true);
-const isFocused = ref(false);
-const isOpened = ref(true);
-const isReverseFocus = ref(false);
-
-// current selection range
-const csr = ref(null);
-const csrInterval = ref(null);
-
-const day = ref(null);
-const month = ref(null);
-const year = ref(null);
-const pressCount = ref(0);
-
-const value = computed(() => {
-  const d = day.value ? `0${day.value}`.slice(-2) : "__";
-  const m = month.value ? `0${month.value}`.slice(-2) : "__";
-  const y = year.value ? `000${year.value}`.slice(-4) : "____";
-  return `${d}-${m}-${y}`;
+const month = computed(() => {
+  return props.modelValue?.month;
 });
 
-// Global events listeners
+const year = computed(() => {
+  return props.modelValue?.year;
+});
+
+const currentSection = computed({
+  get() {
+    return props.currentSection || state.currentSection;
+  },
+  set(value) {
+    state.inputValue = "";
+    state.currentSection = value;
+    emit("update:currentSection", value);
+  },
+});
+
+watch(
+  () => state.inputValue,
+  (value) => {
+    if (isNull(value)) {
+      return;
+    }
+
+    const data = { ...props.modelValue };
+    const sectionKey = Object.keys(dateValues)[currentSection.value];
+    const sectionValues = dateValues[sectionKey];
+    const maxInputLen = sectionValues.max.toString().length;
+    const isYearSection = currentSection.value === 2;
+
+    if (isYearSection && value >= sectionValues.max) {
+      /* If year section selected and value bigger than 9999 */
+      data.year = parseInt(value.slice(-4));
+    } else if (isYearSection && !+value) {
+      /* If year section selected and value contains only zeros */
+      data.year = parseInt(value.slice(-4));
+    } else if (value >= sectionValues.max) {
+      /* If value bigger than section max value */
+      data[sectionKey] = sectionValues.max;
+    } else if (value.length > 1 && !+value) {
+      /* If value contains only zeros */
+      data[sectionKey] = sectionValues.min;
+    } else {
+      data[sectionKey] = parseInt(value);
+    }
+
+    emit("update:modelValue", data);
+
+    if (isYearSection) {
+      /* Do not increment section index if year section selected */
+      return;
+    }
+
+    if (value >= sectionValues.max) {
+      /* If value bigger than section max value  */
+      currentSection.value += 1;
+    } else if (value.length > 1 && !+value) {
+      /* If value contains only zeros */
+      currentSection.value += 1;
+    } else if (
+      (state.inputValue + "0").slice(0, maxInputLen) > sectionValues.max
+    ) {
+      /* If potential value bigger than section max value */
+      currentSection.value += 1;
+    } else if (state.inputValue.length >= maxInputLen) {
+      currentSection.value += 1;
+    }
+  }
+);
 
 window.addEventListener("keydown", (evt) => {
-  if (!isFocused.value) {
-    isReverseFocus.value = evt.shiftKey;
+  if (currentSection.value === null) {
+    state.reveseFocus = evt.shiftKey;
   }
 });
 
-window.addEventListener("click", () => {
-  isReverseFocus.value = false;
-});
-
-// Watchers
-
-watch(csr, (newCSR, oldCSR) => {
-  if (newCSR !== oldCSR) {
-    pressCount.value = 0;
+function onFocus() {
+  if (!currentSection.value) {
+    currentSection.value = state.reveseFocus ? 2 : 0;
   }
-});
-
-// Methods
-
-function setYear(val) {
-  csr.value = SelectionRange.YEAR;
-  year.value = val;
 }
 
-function setMonth(val) {
-  csr.value = SelectionRange.MONTH;
-  month.value = val;
+function onBlur() {
+  currentSection.value = null;
+  if (!isNull(props.modelValue?.year) && !+props.modelValue.year) {
+    const data = { ...props.modelValue, year: 1 };
+    emit("update:modelValue", data);
+  }
 }
 
-function setDay(val) {
-  csr.value = SelectionRange.DAY;
-  day.value = val;
+function onClick(evt, idx) {
+  evt.stopPropagation();
+  currentSection.value = idx;
+  state.reveseFocus = false;
 }
 
 function cleanValue() {
-  pressCount.value = 0;
-  if (csr.value === SelectionRange.DAY) {
-    day.value = null;
-  } else if (csr.value === SelectionRange.MONTH) {
-    month.value = null;
-  } else if (csr.value === SelectionRange.YEAR) {
-    year.value = null;
+  const data = { ...props.modelValue };
+  const sectionKey = Object.keys(dateValues)[currentSection.value];
+  if (!isNull(data[sectionKey])) {
+    data[sectionKey] = null;
+    emit("update:modelValue", data);
+    state.inputValue = "";
   }
 }
 
-function setValue(evt) {
-  switch (evt.keyCode) {
-    case 8:
-      return;
-    case 9:
-      return;
-    case 72:
-      evt.preventDefault();
-      decrementCSR();
-      return;
-    case 74:
-      evt.preventDefault();
-      decrementValue();
-      return;
-    case 75:
-      evt.preventDefault();
-      incrementValue();
-      return;
-    case 76:
-      evt.preventDefault();
-      incrementCSR();
-      return;
-    default:
-      evt.preventDefault();
-  }
+function cleanAll() {
+  const data = { ...props.modelValue };
+  const sectionKey = Object.keys(dateValues)[currentSection.value];
+  data[sectionKey] = null;
+  emit("update:modelValue", null);
+  state.inputValue = "";
+}
 
-  if (evt.keyCode < 47 || evt.keyCode > 57) {
-    evt.preventDefault();
-    return;
-  }
-
-  pressCount.value++;
-  if (csr.value === SelectionRange.DAY) {
-    if (pressCount.value === 1) {
-      day.value = evt.key;
-    } else {
-      const newDay = day.value + evt.key;
-      day.value = newDay < 31 ? newDay : 31;
-      csr.value = SelectionRange.MONTH;
-    }
-  } else if (csr.value === SelectionRange.MONTH) {
-    if (pressCount.value === 1) {
-      month.value = evt.key;
-    } else {
-      const newMonth = month.value + evt.key;
-      month.value = newMonth < 12 ? newMonth : 12;
-      csr.value = SelectionRange.YEAR;
-    }
-  } else if (csr.value === SelectionRange.YEAR) {
-    if (pressCount.value === 1) {
-      year.value = evt.key;
-    } else {
-      year.value += evt.key;
-    }
-  }
+function setCurrentDate() {
+  const dt = new Date();
+  const data = {
+    day: dt.getDate(),
+    month: dt.getMonth() + 1,
+    year: dt.getFullYear(),
+  };
+  emit("update:modelValue", data);
+  state.inputValue = "";
 }
 
 function incrementValue() {
-  if (csr.value === SelectionRange.DAY) {
-    day.value = day.value < 31 ? day.value + 1 : 1;
-  } else if (csr.value === SelectionRange.MONTH) {
-    month.value = month.value < 12 ? month.value + 1 : 1;
-  } else if (csr.value === SelectionRange.YEAR) {
-    year.value++;
+  const data = { ...props.modelValue };
+  const sectionKey = Object.keys(dateValues)[currentSection.value];
+  if (!data[sectionKey]) {
+    data[sectionKey] = dateValues[sectionKey].initial.min;
+  } else if (data[sectionKey] >= dateValues[sectionKey].max) {
+    data[sectionKey] = dateValues[sectionKey].min;
+  } else {
+    data[sectionKey] += 1;
   }
+  emit("update:modelValue", data);
 }
 
 function decrementValue() {
-  if (csr.value === SelectionRange.DAY) {
-    day.value = day.value > 1 ? day.value - 1 : 31;
-  } else if (csr.value === SelectionRange.MONTH) {
-    month.value = month.value > 1 ? month.value - 1 : 12;
-  } else if (csr.value === SelectionRange.YEAR) {
-    year.value = year.value > 1 ? year.value - 1 : props.lastYear;
-  }
-}
-
-function refreshSelection() {
-  // When user click on input, event with preventDefault(),
-  // sometimes browser can allow user to set cursor to specific position.
-  // With current implementation based on interval,
-  // event if user will set cursor in specific position,
-  // this user selection will be changed with current interval function.
-
-  if (csr.value === SelectionRange.DAY) {
-    input.value.setSelectionRange(0, 2);
-  } else if (csr.value === SelectionRange.MONTH) {
-    input.value.setSelectionRange(3, 5);
-  } else if (csr.value === SelectionRange.YEAR) {
-    input.value.setSelectionRange(6, 10);
-  }
-}
-
-function incrementCSR() {
-  if (csr.value < SelectionRange.YEAR) {
-    csr.value++;
-  }
-}
-
-function decrementCSR() {
-  if (csr.value > SelectionRange.DAY) {
-    csr.value--;
-  }
-}
-
-function nextSelectionRange(evt) {
-  if (csr.value < SelectionRange.YEAR) {
-    evt.preventDefault();
-  }
-  csr.value++;
-}
-
-function prevSelectionRange(evt) {
-  if (csr.value > SelectionRange.DAY) {
-    evt.preventDefault();
-  }
-  csr.value--;
-}
-
-function selectDateSection(evt) {
-  // Takes current cursor position on input
-  // and sets appropriate selection range
-
-  if (isFocused.value) {
-    evt.preventDefault();
-  }
-
-  const inputStyle = window.getComputedStyle(input.value, null);
-  const fontSize = parseFloat(inputStyle.getPropertyValue("font-size"));
-  const paddingLeft = parseFloat(inputStyle.getPropertyValue("padding-left"));
-
-  const charSize = fontSize * 0.6;
-  const dayLimit = paddingLeft + charSize * 2;
-  const monthLimit = dayLimit + charSize + charSize * 2;
-  const yearLimit = monthLimit + charSize + charSize * 4;
-
-  const posX = evt.clientX - input.value.getBoundingClientRect().left;
-
-  if (posX > paddingLeft && evt.layerX < dayLimit) {
-    csr.value = SelectionRange.DAY;
-  } else if (posX > dayLimit && evt.layerX < monthLimit) {
-    csr.value = SelectionRange.MONTH;
-  } else if (posX > monthLimit && evt.layerX < yearLimit) {
-    csr.value = SelectionRange.YEAR;
-  } else if (isFocused.value && isOpened.value) {
-    isOpened.value = false;
+  const data = { ...props.modelValue };
+  const sectionKey = Object.keys(dateValues)[currentSection.value];
+  if (!data[sectionKey]) {
+    data[sectionKey] = dateValues[sectionKey].initial.max;
+  } else if (data[sectionKey] <= dateValues[sectionKey].min) {
+    data[sectionKey] = dateValues[sectionKey].max;
   } else {
-    isOpened.value = true;
+    data[sectionKey] -= 1;
   }
+  emit("update:modelValue", data);
 }
 
-function focusInput() {
-  input.value.setSelectionRange(0, 0);
-
-  isFocused.value = true;
-  if (!csr.value) {
-    csr.value = isReverseFocus.value ? SelectionRange.YEAR : SelectionRange.DAY;
-  }
-
-  if (isBlurable.value) {
-    csrInterval.value = setInterval(refreshSelection, 50);
-  }
-}
-
-function blurInput(evt) {
-  if (!isBlurable.value) {
+function incrementSelection(evt) {
+  if (currentSection.value < 2) {
     evt.preventDefault();
+    currentSection.value += 1;
+  }
+}
+
+function decrementSelection(evt) {
+  if (currentSection.value > 0) {
+    evt.preventDefault();
+    currentSection.value -= 1;
+  }
+}
+
+function onKeyDown(evt) {
+  if (evt.shiftKey) {
     return;
   }
-  // TODO: If required validate input is not empty
-  emit("update:modelValue", input.value.value);
-  clearInterval(csrInterval);
-  csrInterval.value = null;
-  isFocused.value = false;
-  isOpened.value = true;
-  csr.value = null;
+
+  if (evt.keyCode > 47 && evt.keyCode < 58) {
+    state.inputValue += evt.key;
+  } else if (evt.keyCode === 67) {
+    cleanAll();
+  } else if (evt.keyCode === 72) {
+    decrementSelection(evt);
+  } else if (evt.keyCode === 74) {
+    decrementValue();
+  } else if (evt.keyCode === 75) {
+    incrementValue();
+  } else if (evt.keyCode === 76) {
+    incrementSelection(evt);
+  } else if (evt.keyCode === 78) {
+    setCurrentDate();
+  }
 }
 
-function disableInputBlur() {
-  isBlurable.value = false;
+function onPaste(evt) {
+  let dtString = (evt.clipboardData || window.clipboardData).getData("text");
+  if (!isNull(dtString)) {
+    dtString = dtString.replace(/[\s/.,]{1,2}/g, " ");
+
+    let match = /(?<month>\d{1,2})\s(?<day>\d{1,2})\s(?<year>\d{4})/.exec(
+      dtString
+    );
+
+    if (!match) {
+      match = /(?<year>\d{4})\s(?<month>\d{1,2})\s(?<day>\d{1,2})/.exec(
+        dtString
+      );
+    }
+
+    if (!match) {
+      match = /(?<month>\w{3,9})\s(?<day>\d{1,2})\s(?<year>\d{4})/.exec(
+        dtString
+      );
+    }
+
+    if (!match) {
+      return;
+    }
+
+    let { day, month, year } = match.groups;
+
+    if (!/\d/.test(month)) {
+      month = month.toLowerCase();
+      const monthsNames = months.map((itm) =>
+        itm.slice(0, month.length).toLowerCase()
+      );
+      if (!monthsNames.includes(month)) {
+        return;
+      }
+      month = monthsNames.indexOf(month) + 1;
+    }
+
+    emit("update:modelValue", {
+      day: parseInt(day),
+      month: parseInt(month),
+      year: parseInt(year),
+    });
+  }
 }
 
-function enableInputBlur() {
-  isBlurable.value = true;
-  input.value.focus();
+function onCopy() {
+  navigator.clipboard.writeText(`${month.value}.${day.value}.${year.value}`);
 }
 </script>
 
 <template>
-  <div class="relative flex flex-col">
-    <label :for="name" class="mb-1.5 text-base">
-      {{ label }}
-    </label>
-
-    <input
-      :id="name"
-      :name="name"
-      :value="value"
-      :required="required"
-      @keydown.esc="isOpened = false"
-      @keydown.tab.exact="nextSelectionRange"
-      @keydown.shift.tab="prevSelectionRange"
-      @keydown.right.prevent="incrementCSR"
-      @keydown.left.prevent="decrementCSR"
-      @keydown.up.prevent="incrementValue"
-      @keydown.down.prevent="decrementValue"
-      @keydown.backspace.prevent="cleanValue"
-      @mousedown="selectDateSection"
-      @keydown.shift.exact="setValue"
-      @keydown.exact="setValue"
-      @focus="focusInput"
-      @blur="blurInput"
-      @paste.prevent
-      type="text"
-      ref="input"
-      class="text-base py-3.5 px-4 border-none rounded-xl cursor-default text-brand-300 selection:bg-brand-100 shadow-inner-brand focus:ring-juicyblue-100"
-      :class="{ 'text-brand-200': !year && !month && !day }"
-    />
-
-    <div
-      v-show="isFocused && isOpened"
-      @mousedown="disableInputBlur"
-      @mouseup="enableInputBlur"
-      class="z-20 absolute top-full flex mt-2 p-7.5 space-x-7.5 bg-white border-none rounded-xl shadow-dark"
-    >
-      <div
-        class="datepicker-days relative flex flex-col max-h-26.25 space-y-6 overflow-scroll scroll-hidden"
+  <div
+    @click="(evt) => onClick(evt, 0)"
+    @focus="onFocus"
+    @blur="onBlur"
+    @keydown.up.prevent="incrementValue"
+    @keydown.down.prevent="decrementValue"
+    @keydown.right.prevent="incrementSelection"
+    @keydown.left.prevent="decrementSelection"
+    @keydown.tab.exact="incrementSelection"
+    @keydown.shift.tab="decrementSelection"
+    @keydown.backspace="cleanValue"
+    @keydown.exact="onKeyDown"
+    @paste="onPaste"
+    @copy="onCopy"
+    :class="{
+      'text-brand-100': isNull(day) && isNull(month) && isNull(year),
+    }"
+    tabindex="0"
+    class="dateinput relative flex py-5 px-4.5 shadow-inner-brand rounded-2.5xl cursor-default focus:ring-1 focus:ring-juicyblue-100 outline-none"
+  >
+    <div class="flex w-full h-full text-base">
+      <span
+        @click="(evt) => onClick(evt, 0)"
+        :class="{ 'selected bg-brand-50': currentSection === 0 }"
+        class="day"
+        >{{ !isNull(day) ? `0${day}`.slice(-2) : "__" }}</span
       >
-        <button
-          v-for="i in 31"
-          :key="name + '-day-' + i"
-          @mousedown="disableInputBlur"
-          @mouseup="enableInputBlur"
-          @click="setDay(i)"
-          type="button"
-          tabindex="-1"
-          class="flex justify-center leading-none"
-        >
-          {{ i }}
-        </button>
-      </div>
-
-      <div
-        class="datepicker-months flex flex-col max-h-26.25 space-y-6 overflow-scroll scroll-hidden"
+      <span>-</span>
+      <span
+        @click="(evt) => onClick(evt, 1)"
+        :class="{ 'selected bg-brand-50': currentSection === 1 }"
+        class="month"
+        >{{ !isNull(month) ? `0${month}`.slice(-2) : "__" }}</span
       >
-        <button
-          v-for="(monthText, index) in months"
-          :key="name + '-month-' + index"
-          @click="setMonth(index + 1)"
-          type="button"
-          tabindex="-1"
-          class="flex justify-center leading-none"
-        >
-          {{ monthText }}
-        </button>
-      </div>
-
-      <div
-        class="datepicker-years flex flex-col max-h-26.25 space-y-6 overflow-scroll scroll-hidden"
+      <span>-</span>
+      <span
+        @click="(evt) => onClick(evt, 2)"
+        :class="{ 'selected bg-brand-50': currentSection === 2 }"
+        class="year"
+        >{{ !isNull(year) ? `000${year}`.slice(-4) : "____" }}</span
       >
-        <button
-          v-for="i in yearsNumber"
-          :key="name + '-year-' + i"
-          @click="setYear(lastYear - i + 1)"
-          type="button"
-          tabindex="-1"
-          class="flex justify-center leading-none"
-        >
-          {{ lastYear - i + 1 }}
-        </button>
-      </div>
     </div>
   </div>
 </template>
