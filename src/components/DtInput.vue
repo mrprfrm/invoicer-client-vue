@@ -30,14 +30,14 @@ const dateValues = {
 };
 
 const state = reactive({
-  inputValue: "",
   currentSection: null,
+  inputValue: "",
   reveseFocus: false,
   date: null,
 });
 
-const props = defineProps(["modelValue"]);
-const emit = defineEmits(["update:modelValue"]);
+const props = defineProps(["modelValue", "currentSection"]);
+const emit = defineEmits(["update:modelValue", "update:currentSection"]);
 
 const day = computed({
   get() {
@@ -53,14 +53,16 @@ const year = computed(() => {
   return props.modelValue?.year;
 });
 
-watch(
-  () => state.currentSection,
-  (newValue, oldValue) => {
-    if (newValue !== oldValue) {
-      state.inputValue = "";
-    }
-  }
-);
+const currentSection = computed({
+  get() {
+    return props.currentSection || state.currentSection;
+  },
+  set(value) {
+    state.inputValue = "";
+    state.currentSection = value;
+    emit("update:currentSection", value);
+  },
+});
 
 watch(
   () => state.inputValue,
@@ -70,10 +72,10 @@ watch(
     }
 
     const data = { ...props.modelValue };
-    const sectionKey = Object.keys(dateValues)[state.currentSection];
+    const sectionKey = Object.keys(dateValues)[currentSection.value];
     const sectionValues = dateValues[sectionKey];
     const maxInputLen = sectionValues.max.toString().length;
-    const isYearSection = state.currentSection === 2;
+    const isYearSection = currentSection.value === 2;
 
     if (isYearSection && value >= sectionValues.max) {
       /* If year section selected and value bigger than 9999 */
@@ -100,35 +102,35 @@ watch(
 
     if (value >= sectionValues.max) {
       /* If value bigger than section max value  */
-      state.currentSection += 1;
+      currentSection.value += 1;
     } else if (value.length > 1 && !+value) {
       /* If value contains only zeros */
-      state.currentSection += 1;
+      currentSection.value += 1;
     } else if (
       (state.inputValue + "0").slice(0, maxInputLen) > sectionValues.max
     ) {
       /* If potential value bigger than section max value */
-      state.currentSection += 1;
+      currentSection.value += 1;
     } else if (state.inputValue.length >= maxInputLen) {
-      state.currentSection += 1;
+      currentSection.value += 1;
     }
   }
 );
 
 window.addEventListener("keydown", (evt) => {
-  if (state.currentSection === null) {
+  if (currentSection.value === null) {
     state.reveseFocus = evt.shiftKey;
   }
 });
 
 function onFocus() {
-  if (!state.currentSection) {
-    state.currentSection = state.reveseFocus ? 2 : 0;
+  if (!currentSection.value) {
+    currentSection.value = state.reveseFocus ? 2 : 0;
   }
 }
 
 function onBlur() {
-  state.currentSection = null;
+  currentSection.value = null;
   if (!isNull(props.modelValue?.year) && !+props.modelValue.year) {
     const data = { ...props.modelValue, year: 1 };
     emit("update:modelValue", data);
@@ -137,13 +139,13 @@ function onBlur() {
 
 function onClick(evt, idx) {
   evt.stopPropagation();
-  state.currentSection = idx;
+  currentSection.value = idx;
   state.reveseFocus = false;
 }
 
 function cleanValue() {
   const data = { ...props.modelValue };
-  const sectionKey = Object.keys(dateValues)[state.currentSection];
+  const sectionKey = Object.keys(dateValues)[currentSection.value];
   if (!isNull(data[sectionKey])) {
     data[sectionKey] = null;
     emit("update:modelValue", data);
@@ -153,7 +155,7 @@ function cleanValue() {
 
 function cleanAll() {
   const data = { ...props.modelValue };
-  const sectionKey = Object.keys(dateValues)[state.currentSection];
+  const sectionKey = Object.keys(dateValues)[currentSection.value];
   data[sectionKey] = null;
   emit("update:modelValue", null);
   state.inputValue = "";
@@ -172,7 +174,7 @@ function setCurrentDate() {
 
 function incrementValue() {
   const data = { ...props.modelValue };
-  const sectionKey = Object.keys(dateValues)[state.currentSection];
+  const sectionKey = Object.keys(dateValues)[currentSection.value];
   if (!data[sectionKey]) {
     data[sectionKey] = dateValues[sectionKey].initial.min;
   } else if (data[sectionKey] >= dateValues[sectionKey].max) {
@@ -185,7 +187,7 @@ function incrementValue() {
 
 function decrementValue() {
   const data = { ...props.modelValue };
-  const sectionKey = Object.keys(dateValues)[state.currentSection];
+  const sectionKey = Object.keys(dateValues)[currentSection.value];
   if (!data[sectionKey]) {
     data[sectionKey] = dateValues[sectionKey].initial.max;
   } else if (data[sectionKey] <= dateValues[sectionKey].min) {
@@ -197,16 +199,16 @@ function decrementValue() {
 }
 
 function incrementSelection(evt) {
-  if (state.currentSection < 2) {
+  if (currentSection.value < 2) {
     evt.preventDefault();
-    state.currentSection += 1;
+    currentSection.value += 1;
   }
 }
 
 function decrementSelection(evt) {
-  if (state.currentSection > 0) {
+  if (currentSection.value > 0) {
     evt.preventDefault();
-    state.currentSection -= 1;
+    currentSection.value -= 1;
   }
 }
 
@@ -307,21 +309,21 @@ function onCopy() {
     <div class="flex w-full h-full text-base">
       <span
         @click="(evt) => onClick(evt, 0)"
-        :class="{ 'selected bg-brand-50': state.currentSection === 0 }"
+        :class="{ 'selected bg-brand-50': currentSection === 0 }"
         class="day"
         >{{ !isNull(day) ? `0${day}`.slice(-2) : "__" }}</span
       >
       <span>-</span>
       <span
         @click="(evt) => onClick(evt, 1)"
-        :class="{ 'selected bg-brand-50': state.currentSection === 1 }"
+        :class="{ 'selected bg-brand-50': currentSection === 1 }"
         class="month"
         >{{ !isNull(month) ? `0${month}`.slice(-2) : "__" }}</span
       >
       <span>-</span>
       <span
         @click="(evt) => onClick(evt, 2)"
-        :class="{ 'selected bg-brand-50': state.currentSection === 2 }"
+        :class="{ 'selected bg-brand-50': currentSection === 2 }"
         class="year"
         >{{ !isNull(year) ? `000${year}`.slice(-4) : "____" }}</span
       >
