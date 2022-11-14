@@ -76,22 +76,22 @@ function scrollHandler(evt) {
       <div class="flex flex-col space-y-3">
         <h2 class="text-2xl font-semibold">Invoice information</h2>
         <fieldset id="invoice-fields" class="space-y-3 flex flex-col">
-          <div class="relative flex flex-col">
+          <div class="flex flex-col space-y-1.5">
             <label>Invoice name</label>
             <input type="text" placeholder="Enter name" />
           </div>
 
-          <div class="space-y-1.5">
+          <div class="flex flex-col space-y-1.5">
             <label>Invoice date</label>
             <DateField></DateField>
           </div>
 
-          <div class="relative flex flex-col">
+          <div class="flex flex-col space-y-1.5">
             <label>Contract name</label>
             <input type="text" placeholder="Enter name" />
           </div>
 
-          <div class="space-y-1.5">
+          <div class="flex flex-col space-y-1.5">
             <label>Contract date</label>
             <DateField></DateField>
           </div>

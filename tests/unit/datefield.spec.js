@@ -21,22 +21,22 @@ describe("DateField datepicker visibility tests", () => {
     expect(wrapper.find(".datepicker").isVisible()).toBe(false);
   });
 
-  it("Click on focused input should hide datepicker", async () => {
+  it("Mousedown on focused input should hide datepicker", async () => {
     await wrapper.find(".dateinput").trigger("focus");
     expect(wrapper.find(".datepicker").isVisible()).toBe(true);
 
-    await wrapper.find(".dateinput").trigger("click");
+    await wrapper.find(".dateinput").trigger("mousedown");
     expect(wrapper.find(".datepicker").isVisible()).toBe(false);
   });
 
-  it("Click on focused input with closed datepicker should open datepicker", async () => {
+  it("Mousedown on focused input with closed datepicker should open datepicker", async () => {
     await wrapper.find(".dateinput").trigger("focus");
     expect(wrapper.find(".datepicker").isVisible()).toBe(true);
 
-    await wrapper.find(".dateinput").trigger("click");
+    await wrapper.find(".dateinput").trigger("mousedown");
     expect(wrapper.find(".datepicker").isVisible()).toBe(false);
 
-    await wrapper.find(".dateinput").trigger("click");
+    await wrapper.find(".dateinput").trigger("mousedown");
     expect(wrapper.find(".datepicker").isVisible()).toBe(true);
   });
 

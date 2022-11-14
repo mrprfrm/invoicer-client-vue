@@ -309,12 +309,14 @@ function onCopy() {
     <div class="flex w-full h-full text-base">
       <span
         @click="(evt) => onClick(evt, 0)"
+        @mousedown.stop
         :class="{ 'selected bg-brand-50': currentSection === 0 }"
         class="day"
         >{{ !isNull(day) ? `0${day}`.slice(-2) : "__" }}</span
       >
       <span>-</span>
       <span
+        @mousedown.stop
         @click="(evt) => onClick(evt, 1)"
         :class="{ 'selected bg-brand-50': currentSection === 1 }"
         class="month"
@@ -323,6 +325,7 @@ function onCopy() {
       <span>-</span>
       <span
         @click="(evt) => onClick(evt, 2)"
+        @mousedown.stop
         :class="{ 'selected bg-brand-50': currentSection === 2 }"
         class="year"
         >{{ !isNull(year) ? `000${year}`.slice(-4) : "____" }}</span

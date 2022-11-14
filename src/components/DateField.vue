@@ -7,8 +7,8 @@ import DateInput from "@/components/DateInput.vue";
 const field = ref(null);
 const value = ref({ day: 5, month: 2, year: 2020 });
 const state = reactive({
-  lastNonEmptyValue: null,
-  currentSection: false,
+  lastNonEmptySection: null,
+  currentSection: null,
   blurable: true,
   opened: false,
 });
@@ -30,6 +30,12 @@ function onBlur() {
     state.opened = false;
   }
 }
+
+function onMouseDown() {
+  if (state.currentSection !== null) {
+    state.opened = !state.opened;
+  }
+}
 </script>
 
 <template>
@@ -38,8 +44,9 @@ function onBlur() {
       @blur="onBlur"
       @focus="state.opened = true"
       @keydown.esc="state.opened = !state.opened"
-      @click="state.opened = !state.opened"
+      @mousedown="onMouseDown"
       v-model="value"
+      v-model:currentSection="state.currentSection"
     />
     <DatePicker
       @mousedown="state.blurable = false"
