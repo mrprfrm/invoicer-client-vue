@@ -214,6 +214,7 @@ function decrementSelection(evt) {
 
 function onKeyDown(evt) {
   if (evt.shiftKey) {
+    evt.preventDefault();
     return;
   }
 

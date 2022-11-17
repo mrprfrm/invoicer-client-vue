@@ -1,65 +1,67 @@
 <script setup>
-import { ref, watch, defineProps } from "vue";
+import { ref, watch, defineProps, reactive, computed } from "vue";
 import CheckIcon from "../icons/CheckIcon.vue";
 
 const props = defineProps({
   options: Array,
 });
 
-const selection = ref(0);
-const selected = ref(null);
-const optionsElements = ref([]);
+const state = reactive({
+  selection: 0,
+  selected: null,
+});
+
+const elements = ref([]);
+
+const selectedIndex = computed(() => {
+  const options = props.options.map((itm) => itm.id.toString());
+  const index = options.indexOf(state.selected?.toString());
+  return index !== -1 ? index : 0;
+});
 
 function toggleSelection(val) {
-  if (val === selected.value) {
-    selected.value = null;
+  if (val === state.selected) {
+    state.selected = null;
   } else {
-    selected.value = val;
+    state.selected = val;
   }
 }
 
-function keypressHandler(evt, optionId) {
-  switch (evt.keyCode) {
-    case 8:
-      return;
-    case 9:
-      return;
-    case 72:
-      evt.preventDefault();
-      selected.value = null;
-      return;
-    case 74:
-      evt.preventDefault();
-      incrementSelection();
-      return;
-    case 75:
-      evt.preventDefault();
-      decrementSelection();
-      return;
-    case 76:
-      evt.preventDefault();
-      selected.value = optionId;
-      return;
-    default:
-      evt.preventDefault();
+function onKeyDown(evt) {
+  if (evt.shiftKey) {
+    evt.preventDefault();
+    return;
+  }
+
+  if (evt.keyCode === 72) {
+    state.selected = null;
+  } else if (evt.keyCode === 74) {
+    incrementSelection();
+  } else if (evt.keyCode === 75) {
+    decrementSelection();
+  } else if (evt.keyCode === 76) {
+    state.selected = evt.target.dataset.id;
   }
 }
 
 function incrementSelection() {
-  if (selection.value < props.options.length - 1) {
-    selection.value++;
+  if (state.selection < props.options.length - 1) {
+    state.selection++;
   }
 }
 
 function decrementSelection() {
-  if (selection.value > 0) {
-    selection.value--;
+  if (state.selection > 0) {
+    state.selection--;
   }
 }
 
-watch(selection, (newSelection) => {
-  optionsElements.value[newSelection].focus();
-});
+watch(
+  () => state.selection,
+  (selection) => {
+    elements.value[selection].focus();
+  }
+);
 </script>
 
 <template>
@@ -67,26 +69,26 @@ watch(selection, (newSelection) => {
     <button
       v-for="(option, idx) in options"
       :key="option.id"
-      :tabindex="idx == 0 ? 0 : -1"
+      :tabindex="idx == selectedIndex ? 0 : -1"
       :class="{
         'selected bg-brand-400 text-white bg-juicyblue-100 shadow-ml':
-          option.id === selected,
+          option.id == state.selected,
       }"
-      @focus="selection = idx"
+      @focus="state.selection = idx"
       @click="toggleSelection(option.id)"
-      @keydown.left="selected = null"
-      @keydown.right="selected = option.id"
-      @keydown.down="incrementSelection"
-      @keydown.up="decrementSelection"
+      @keydown.left.prevent="state.selected = null"
+      @keydown.right.prevent="state.selected = option.id"
+      @keydown.down.prevent="incrementSelection"
+      @keydown.up.prevent="decrementSelection"
       @keydown.space.prevent="toggleSelection(option.id)"
-      @keydown.shift.exact="keypressHandler($event, option.id)"
-      @keydown.exact="keypressHandler($event, option.id)"
+      @keydown.exact="onKeyDown"
+      :data-id="option.id"
       type="button"
-      class="flex justify-between p-4 rounded-2.5xl border border-none shadow-ml outline-none focus:ring-1 focus:ring-juicyblue-100"
-      ref="optionsElements"
+      class="flex justify-between py-5 px-4.5 rounded-2.5xl border border-none shadow-ml outline-none focus:ring-1 focus:ring-juicyblue-100"
+      ref="elements"
     >
       <span>{{ option.name }}</span>
-      <CheckIcon v-if="option.id === selected"></CheckIcon>
+      <CheckIcon v-if="option.id == state.selected"></CheckIcon>
     </button>
   </div>
 </template>
