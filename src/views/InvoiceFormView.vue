@@ -104,7 +104,7 @@ function scrollHandler(evt) {
         <button
           @click="toggleContractorModal"
           type="button"
-          class="flex justify-center text-brand-100 p-4 rounded-2.5xl border border-dashed border-brand-100 outline-none focus:ring-1 focus:ring-juicyblue-100"
+          class="flex justify-center text-brand-100 py-5 px-4.5 rounded-2.5xl border border-dashed border-brand-100 outline-none focus:ring-1 focus:ring-juicyblue-100"
         >
           + new contractor
         </button>
@@ -116,7 +116,7 @@ function scrollHandler(evt) {
         <button
           @click="toggleClientModal"
           type="button"
-          class="flex justify-center text-brand-100 p-4 rounded-2.5xl border border-dashed border-brand-100 outline-none focus:ring-1 focus:ring-juicyblue-100"
+          class="flex justify-center text-brand-100 py-5 px-4.5 rounded-2.5xl border border-dashed border-brand-100 outline-none focus:ring-1 focus:ring-juicyblue-100"
         >
           + new client
         </button>
@@ -133,7 +133,7 @@ function scrollHandler(evt) {
 
         <button
           type="button"
-          class="flex justify-center text-brand-100 p-4 rounded-2.5xl border border-dashed border-brand-100"
+          class="flex justify-center text-brand-100 py-5 px-4.5 rounded-2.5xl border border-dashed border-brand-100"
         >
           + add item
         </button>
