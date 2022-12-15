@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 @layer components {
-  input[type="text"] {
+  input[type="text"],
+  input[type="number"] {
     @apply py-5 px-4.5 shadow-inner-brand rounded-2.5xl border-none placeholder:text-brand-100 focus:ring-1 focus:ring-juicyblue-100;
   }
 }
