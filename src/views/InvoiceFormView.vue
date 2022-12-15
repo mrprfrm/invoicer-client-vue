@@ -17,6 +17,10 @@ const store = useStore();
 
 const isTermsOpened = ref(false);
 
+const dtValue = ref({ day: 5, month: 2, year: 2020 });
+const contractor = ref(null);
+const client = ref(null);
+
 const contractors = ref([
   {
     id: 1,
@@ -83,7 +87,7 @@ function scrollHandler(evt) {
 
           <div class="flex flex-col space-y-1.5">
             <label>Invoice date</label>
-            <DateField></DateField>
+            <DateField v-model="dtValue" />
           </div>
 
           <div class="flex flex-col space-y-1.5">
@@ -93,14 +97,14 @@ function scrollHandler(evt) {
 
           <div class="flex flex-col space-y-1.5">
             <label>Contract date</label>
-            <DateField></DateField>
+            <DateField v-model="dtValue" />
           </div>
         </fieldset>
       </div>
 
       <div class="flex flex-col space-y-3">
         <h2 class="text-2xl font-semibold">Choose contractor</h2>
-        <FlatSelect :options="contractors"></FlatSelect>
+        <FlatSelect v-model="contractor" :options="contractors" />
         <button
           @click="toggleContractorModal"
           type="button"
@@ -112,7 +116,7 @@ function scrollHandler(evt) {
 
       <div class="flex flex-col space-y-3">
         <h2 class="text-2xl font-semibold">Choose client</h2>
-        <FlatSelect :options="clients"></FlatSelect>
+        <FlatSelect v-model="client" :options="clients"></FlatSelect>
         <button
           @click="toggleClientModal"
           type="button"

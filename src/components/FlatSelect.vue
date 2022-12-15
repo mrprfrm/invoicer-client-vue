@@ -1,10 +1,9 @@
 <script setup>
-import { ref, watch, defineProps, reactive, computed } from "vue";
+import { ref, watch, defineProps, defineEmits, reactive, computed } from "vue";
 import CheckIcon from "../icons/CheckIcon.vue";
 
-const props = defineProps({
-  options: Array,
-});
+const props = defineProps(["modelValue", "options"]);
+const emit = defineEmits(["update:modelValue"]);
 
 const state = reactive({
   selection: 0,
@@ -14,33 +13,36 @@ const state = reactive({
 const elements = ref([]);
 
 const selectedIndex = computed(() => {
-  const options = props.options.map((itm) => itm.id.toString());
-  const index = options.indexOf(state.selected?.toString());
-  return index !== -1 ? index : 0;
+  const idx = props.options.indexOf(props.modelValue);
+  return idx === -1 ? 0 : idx;
 });
 
 function toggleSelection(val) {
-  if (val === state.selected) {
-    state.selected = null;
+  if (val === props.modelValue) {
+    emit("update:modelValue", null);
+    /* state.selected = null; */
   } else {
-    state.selected = val;
+    emit("update:modelValue", val);
+    /* state.selected = val; */
   }
 }
 
-function onKeyDown(evt) {
+function onKeyDown(evt, option) {
   if (evt.shiftKey) {
     evt.preventDefault();
     return;
   }
 
   if (evt.keyCode === 72) {
-    state.selected = null;
+    emit("update:modelValue", null);
+    /* state.selected = null; */
   } else if (evt.keyCode === 74) {
     incrementSelection();
   } else if (evt.keyCode === 75) {
     decrementSelection();
   } else if (evt.keyCode === 76) {
-    state.selected = evt.target.dataset.id;
+    emit("update:modelValue", option);
+    /* state.selected = option; */
   }
 }
 
@@ -68,27 +70,27 @@ watch(
   <div class="flex flex-col space-y-3">
     <button
       v-for="(option, idx) in options"
-      :key="option.id"
+      :key="option.toString()"
       :tabindex="idx == selectedIndex ? 0 : -1"
       :class="{
-        'selected bg-brand-400 text-white bg-juicyblue-100 shadow-ml':
-          option.id == state.selected,
+        'bg-brand-400 text-white bg-juicyblue-100 shadow-ml':
+          option == props.modelValue,
+        focused: idx === state.selection,
       }"
       @focus="state.selection = idx"
-      @click="toggleSelection(option.id)"
-      @keydown.left.prevent="state.selected = null"
-      @keydown.right.prevent="state.selected = option.id"
+      @click="toggleSelection(option)"
+      @keydown.left.prevent="$emit('update:modelValue', null)"
+      @keydown.right.prevent="$emit('update:modelValue', option)"
       @keydown.down.prevent="incrementSelection"
       @keydown.up.prevent="decrementSelection"
-      @keydown.space.prevent="toggleSelection(option.id)"
-      @keydown.exact="onKeyDown"
-      :data-id="option.id"
+      @keydown.space.prevent="toggleSelection(option)"
+      @keydown.exact="(evt) => onKeyDown(evt, option)"
       type="button"
       class="flex justify-between py-5 px-4.5 rounded-2.5xl border border-none shadow-ml outline-none focus:ring-1 focus:ring-juicyblue-100"
       ref="elements"
     >
       <span>{{ option.name }}</span>
-      <CheckIcon v-if="option.id == state.selected"></CheckIcon>
+      <CheckIcon v-if="option == props.modelValue"></CheckIcon>
     </button>
   </div>
 </template>

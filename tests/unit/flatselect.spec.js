@@ -1,127 +1,100 @@
-import { shallowMount } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
 import FlatSelect from "@/components/FlatSelect.vue";
 
-describe("Mouse click selection test", () => {
+describe("Pick options without initial state", () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallowMount(FlatSelect, {
-      props: {
+    wrapper = mount({
+      components: { FlatSelect },
+      template: `<FlatSelect v-model="value" :options="options" />`,
+      data: () => ({
         options: [
           {
             id: 1,
-            name: "IE Petrov Anton Sergeevich",
+            value: "IE Jones",
           },
           {
             id: 2,
-            name: "IE Petrov",
+            value: "IE Petrov",
           },
         ],
-      },
+        value: null,
+      }),
     });
   });
 
-  it("Select an option", async () => {
+  it("Click on an option should set select value", async () => {
     const option = wrapper.findAll("button")[0];
-
     await option.trigger("click");
-    expect(option.classes("selected")).toBe(true);
+    expect(wrapper.vm.value).toBe(wrapper.vm.options[0]);
   });
 
-  it("Select another option", async () => {
+  it("Space key press on an option should set select value", async () => {
     const option = wrapper.findAll("button")[0];
-    const option1 = wrapper.findAll("button")[1];
-
-    await option.trigger("click");
-    await option1.trigger("click");
-
-    expect(option.classes("selected")).toBe(false);
-    expect(option1.classes("selected")).toBe(true);
+    await option.trigger("keydown.space");
+    expect(wrapper.vm.value).toBe(wrapper.vm.options[0]);
   });
 
-  it("Remove selection", async () => {
+  it("Right key press on focused should select this optiion", async () => {
     const option = wrapper.findAll("button")[0];
-
-    await option.trigger("click");
-    expect(option.classes("selected")).toBe(true);
-
-    await option.trigger("click");
-    expect(option.classes("selected")).toBe(false);
+    await option.trigger("keydown.right");
+    expect(wrapper.vm.value).toBe(wrapper.vm.options[0]);
   });
 
-  // TODO: test store changed
+  it("Down key press should set next option focused", async () => {
+    const option = wrapper.findAll("button")[0];
+    await option.trigger("keydown.down");
+    expect(wrapper.findAll("button")[1].classes("focused")).toBe(true);
+  });
 });
 
-describe("Keys press selection test", () => {
+describe("Pick options with initial state", () => {
   let wrapper;
 
+  const options = [
+    {
+      id: 1,
+      value: "IE Jones",
+    },
+    {
+      id: 2,
+      value: "IE Petrov",
+    },
+  ];
+
   beforeEach(() => {
-    wrapper = shallowMount(FlatSelect, {
-      props: {
-        options: [
-          {
-            id: 1,
-            name: "IE Petrov Anton Sergeevich",
-          },
-          {
-            id: 2,
-            name: "IE Petrov",
-          },
-        ],
-      },
+    wrapper = mount({
+      components: { FlatSelect },
+      template: `<FlatSelect v-model="value" :options="options" />`,
+      data: () => ({
+        options,
+        value: options[1],
+      }),
     });
   });
 
-  it("Toggle option selection", async () => {
-    const option = wrapper.findAll("button")[0];
+  it("Click on a selected option should clean select value", async () => {
+    const option = wrapper.findAll("button")[1];
+    await option.trigger("click");
+    expect(wrapper.vm.value).toBe(null);
+  });
 
-    await option.trigger("focus");
+  it("Space key press on a selected option should clean select value", async () => {
+    const option = wrapper.findAll("button")[1];
     await option.trigger("keydown.space");
-    expect(option.classes("selected")).toBe(true);
-
-    await option.trigger("keydown.space");
-    expect(option.classes("selected")).toBe(false);
+    expect(wrapper.vm.value).toBe(null);
   });
 
-  it("Toggle another option selection", async () => {
-    const option = wrapper.findAll("button")[0];
-    const option1 = wrapper.findAll("button")[1];
-
-    await option.trigger("focus");
-    await option.trigger("keydown.down");
-    await option1.trigger("keydown.space");
-
-    expect(option.classes("selected")).toBe(false);
-    expect(option1.classes("selected")).toBe(true);
-
-    await option1.trigger("keydown.space");
-    expect(option1.classes("selected")).toBe(false);
-  });
-
-  it("Select an option", async () => {
-    const option = wrapper.findAll("button")[0];
-
-    await option.trigger("focus");
-    await option.trigger("keydown.right");
-    expect(option.classes("selected")).toBe(true);
-
-    await option.trigger("keydown.right");
-    expect(option.classes("selected")).toBe(true);
-  });
-
-  it("Remove option selection", async () => {
-    const option = wrapper.findAll("button")[0];
-
-    await option.trigger("focus");
-    await option.trigger("keydown.right");
-    expect(option.classes("selected")).toBe(true);
-
+  it("Left key press on selected optiion should clean select value", async () => {
+    const option = wrapper.findAll("button")[1];
     await option.trigger("keydown.left");
-    expect(option.classes("selected")).toBe(false);
-
-    await option.trigger("keydown.left");
-    expect(option.classes("selected")).toBe(false);
+    expect(wrapper.vm.value).toBe(null);
   });
 
-  // TODO: test store changed
+  it("Up key press should set next option focused", async () => {
+    const option = wrapper.findAll("button")[1];
+    await option.trigger("keydown.up");
+    expect(wrapper.findAll("button")[0].classes("focused")).toBe(true);
+  });
 });
