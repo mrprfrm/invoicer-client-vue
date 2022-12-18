@@ -24,6 +24,11 @@ describe("Pick options without initial state", () => {
     });
   });
 
+  it("If select focused then first option should be hovered", async () => {
+    await wrapper.trigger("focus");
+    expect(wrapper.findAll("button")[0].classes("focused")).toBe(true);
+  });
+
   it("Click on an option should set select value", async () => {
     const option = wrapper.findAll("button")[0];
     await option.trigger("click");
@@ -74,6 +79,11 @@ describe("Pick options with initial state", () => {
     });
   });
 
+  it("If select blured then no one option should be hovered", async () => {
+    await wrapper.trigger("blur");
+    expect(wrapper.find("button.focused").exists()).toBe(false);
+  });
+
   it("Click on a selected option should clean select value", async () => {
     const option = wrapper.findAll("button")[1];
     await option.trigger("click");
@@ -81,20 +91,18 @@ describe("Pick options with initial state", () => {
   });
 
   it("Space key press on a selected option should clean select value", async () => {
-    const option = wrapper.findAll("button")[1];
-    await option.trigger("keydown.space");
+    await wrapper.trigger("keydown.down");
+    await wrapper.trigger("keydown.space");
     expect(wrapper.vm.value).toBe(null);
   });
 
   it("Left key press on selected optiion should clean select value", async () => {
-    const option = wrapper.findAll("button")[1];
-    await option.trigger("keydown.left");
+    await wrapper.trigger("keydown.left");
     expect(wrapper.vm.value).toBe(null);
   });
 
   it("Up key press should set next option focused", async () => {
-    const option = wrapper.findAll("button")[1];
-    await option.trigger("keydown.up");
+    await wrapper.trigger("keydown.up");
     expect(wrapper.findAll("button")[0].classes("focused")).toBe(true);
   });
 });

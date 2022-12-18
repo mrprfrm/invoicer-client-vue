@@ -13,7 +13,7 @@ defineProps(["name", "placeholder"]);
       <TextArea :name="name" :placeholder="placeholder"></TextArea>
       <div class="flex space-x-2.5">
         <button
-          class="flex flex-1 py-3.5 justify-center border rounded-2.5xl border-brand-100 text-brand-200"
+          class="flex flex-1 py-3.5 justify-center border rounded-2.5xl border-violetgray-100 text-violetgray-200"
           @click="opened = false"
         >
           Cancel
@@ -25,7 +25,7 @@ defineProps(["name", "placeholder"]);
         </button>
       </div>
     </div>
-    <span v-if="!opened" class="text-brand-100" @click="opened = true"
+    <span v-if="!opened" class="text-violetgray-100" @click="opened = true"
       >There is nothing yet here.</span
     >
   </div>

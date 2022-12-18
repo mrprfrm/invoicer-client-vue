@@ -8,8 +8,8 @@ const closeModal = () => store.dispatch("CLOSE_CLIENT_MODAL");
 </script>
 
 <template>
-  <div class="fixed flex flex-col justify-center inset-0 text-brand-300">
-    <div class="absolute inset-0 opacity-90 bg-brand-300"></div>
+  <div class="fixed flex flex-col justify-center inset-0 text-violetgray-300">
+    <div class="absolute inset-0 opacity-90 bg-violetgray-300"></div>
     <div class="z-10 flex flex-col p-4 max-h-screen">
       <div
         class="flex flex-col space-y-3 pt-7.5 pb-4 rounded-2.5xl bg-white max-h-full"
@@ -48,7 +48,7 @@ const closeModal = () => store.dispatch("CLOSE_CLIENT_MODAL");
           <button
             @click="closeModal"
             type="button"
-            class="py-3.5 border border-brand-100 flex-1 rounded-2.5xl text-brand-200"
+            class="py-3.5 border border-violetgray-100 flex-1 rounded-2.5xl text-violetgray-200"
           >
             Cancel
           </button>

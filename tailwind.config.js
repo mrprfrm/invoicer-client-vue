@@ -7,7 +7,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        brand: {
+        violetgray: {
           50: "#CDD1F0",
           100: "#A9A8E0",
           200: "#4C4B7E",
@@ -16,6 +16,7 @@ module.exports = {
         juicyblue: {
           50: "#ACC8FF",
           100: "#3177FF",
+          200: "#216CFF",
         },
         juicygreen: {
           50: "#B2EBD0",
@@ -37,7 +38,7 @@ module.exports = {
       boxShadow: {
         dark: "0px 4px 16px 0px rgba(68, 64, 234, 0.2);",
         ml: "0px 4px 12px rgba(76, 75, 126, 0.25);",
-        "inner-brand": "inset 0px 2px 6px rgba(76, 75, 126, 0.2);",
+        "inner-violetgray": "inset 0px 2px 6px rgba(76, 75, 126, 0.2);",
       },
       height: {
         18.5: "4.625rem", //74px
@@ -72,7 +73,7 @@ module.exports = {
     }),
     plugin(function ({ addUtilities }) {
       addUtilities({
-        ".bg-brand-gradient": {
+        ".bg-violetgray-gradient": {
           background:
             "radial-gradient(134.2% 110.5% at -9.28% -8.59%, #71A1FF 34.38%, #293CEB 93.23%)",
         },

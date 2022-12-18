@@ -302,16 +302,16 @@ function onCopy() {
     @paste="onPaste"
     @copy="onCopy"
     :class="{
-      'text-brand-100': isNull(day) && isNull(month) && isNull(year),
+      'text-violetgray-100': isNull(day) && isNull(month) && isNull(year),
     }"
     tabindex="0"
-    class="dateinput relative flex py-5 px-4.5 shadow-inner-brand rounded-2.5xl cursor-default focus:ring-1 focus:ring-juicyblue-100 outline-none"
+    class="dateinput relative flex py-5 px-4.5 shadow-inner-violetgray rounded-2.5xl cursor-default focus:ring-1 focus:ring-juicyblue-100 outline-none"
   >
     <div class="flex w-full h-full text-base">
       <span
         @click="(evt) => onClick(evt, 0)"
         @mousedown.stop
-        :class="{ 'selected bg-brand-50': currentSection === 0 }"
+        :class="{ 'selected bg-violetgray-50': currentSection === 0 }"
         class="day"
         >{{ !isNull(day) ? `0${day}`.slice(-2) : "__" }}</span
       >
@@ -319,7 +319,7 @@ function onCopy() {
       <span
         @mousedown.stop
         @click="(evt) => onClick(evt, 1)"
-        :class="{ 'selected bg-brand-50': currentSection === 1 }"
+        :class="{ 'selected bg-violetgray-50': currentSection === 1 }"
         class="month"
         >{{ !isNull(month) ? `0${month}`.slice(-2) : "__" }}</span
       >
@@ -327,7 +327,7 @@ function onCopy() {
       <span
         @click="(evt) => onClick(evt, 2)"
         @mousedown.stop
-        :class="{ 'selected bg-brand-50': currentSection === 2 }"
+        :class="{ 'selected bg-violetgray-50': currentSection === 2 }"
         class="year"
         >{{ !isNull(year) ? `000${year}`.slice(-4) : "____" }}</span
       >

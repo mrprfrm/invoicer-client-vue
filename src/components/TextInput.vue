@@ -12,7 +12,7 @@ defineProps(["name", "placeholder", "label", "inputClass"]);
       :name="name"
       :placeholder="placeholder"
       :class="inputClass"
-      class="py-3.5 px-4 border-none rounded-2xl placeholder:text-brand-50 text-brand-300 selection:bg-brand-100 shadow-inner-brand focus:ring-juicyblue-100"
+      class="py-3.5 px-4 border-none rounded-2xl placeholder:text-violetgray-50 text-violetgray-300 selection:bg-violetgray-100 shadow-inner-violetgray focus:ring-juicyblue-100"
       type="text"
     />
   </div>

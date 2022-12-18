@@ -45,7 +45,7 @@ function enterHandler(evt) {
         @input="content = $event.target.value"
         @keydown.enter="enterHandler"
         type="text"
-        class="absolute inset-0 z-10 py-3.5 px-4 border-none resize-none rounded-xl focus:ring-juicyblue-100 placeholder:text-brand-50 selection:bg-brand-100 shadow-inner-brand"
+        class="absolute inset-0 z-10 py-3.5 px-4 border-none resize-none rounded-xl focus:ring-juicyblue-100 placeholder:text-violetgray-50 selection:bg-violetgray-100 shadow-inner-violetgray"
       />
     </div>
   </div>

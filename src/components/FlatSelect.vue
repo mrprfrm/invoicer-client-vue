@@ -1,48 +1,34 @@
 <script setup>
-import { ref, watch, defineProps, defineEmits, reactive, computed } from "vue";
+import { ref, defineProps, defineEmits, reactive } from "vue";
 import CheckIcon from "../icons/CheckIcon.vue";
 
 const props = defineProps(["modelValue", "options"]);
 const emit = defineEmits(["update:modelValue"]);
 
 const state = reactive({
-  selection: 0,
-  selected: null,
+  selection: null,
 });
 
 const elements = ref([]);
 
-const selectedIndex = computed(() => {
-  const idx = props.options.indexOf(props.modelValue);
-  return idx === -1 ? 0 : idx;
+window.addEventListener("keydown", (evt) => {
+  if (state.selection === null) {
+    state.reveseFocus = evt.shiftKey;
+  }
 });
 
-function toggleSelection(val) {
-  if (val === props.modelValue) {
-    emit("update:modelValue", null);
-    /* state.selected = null; */
-  } else {
-    emit("update:modelValue", val);
-    /* state.selected = val; */
-  }
+function setSelected() {
+  const value = props.options[state.selection];
+  emit("update:modelValue", value);
 }
 
-function onKeyDown(evt, option) {
-  if (evt.shiftKey) {
-    evt.preventDefault();
-    return;
-  }
-
-  if (evt.keyCode === 72) {
+function toggleSelected() {
+  const value = props.options[state.selection];
+  if (value === props.modelValue) {
     emit("update:modelValue", null);
-    /* state.selected = null; */
-  } else if (evt.keyCode === 74) {
-    incrementSelection();
-  } else if (evt.keyCode === 75) {
-    decrementSelection();
-  } else if (evt.keyCode === 76) {
-    emit("update:modelValue", option);
-    /* state.selected = option; */
+  } else {
+    const value = props.options[state.selection];
+    emit("update:modelValue", value);
   }
 }
 
@@ -58,33 +44,61 @@ function decrementSelection() {
   }
 }
 
-watch(
-  () => state.selection,
-  (selection) => {
-    elements.value[selection].focus();
+function onClick({ idx }) {
+  state.selection = idx;
+  toggleSelected();
+}
+
+function onKeyDown(evt) {
+  if (evt.shiftKey) {
+    evt.preventDefault();
+    return;
   }
-);
+
+  if (evt.keyCode === 72) {
+    emit("update:modelValue", null);
+  } else if (evt.keyCode === 74) {
+    incrementSelection();
+  } else if (evt.keyCode === 75) {
+    decrementSelection();
+  } else if (evt.keyCode === 76) {
+    const value = props.options[state.selection];
+    emit("update:modelValue", value);
+  }
+}
+
+function onFocus() {
+  if (!state.selection) {
+    state.selection = state.reveseFocus ? props.options.length - 1 : 0;
+  }
+}
 </script>
 
 <template>
-  <div class="flex flex-col space-y-3">
+  <div
+    class="flex flex-col space-y-3 outline-none"
+    :tabindex="0"
+    @focus="onFocus"
+    @blur="state.selection = null"
+    @keydown.left.prevent="$emit('update:modelValue', null)"
+    @keydown.right.prevent="setSelected"
+    @keydown.down.prevent="incrementSelection"
+    @keydown.up.prevent="decrementSelection"
+    @keydown.space.prevent="toggleSelected"
+    @keydown.exact="onKeyDown"
+  >
     <button
       v-for="(option, idx) in options"
       :key="option.toString()"
-      :tabindex="idx == selectedIndex ? 0 : -1"
+      :tabindex="-1"
       :class="{
-        'bg-brand-400 text-white bg-juicyblue-100 shadow-ml':
-          option == props.modelValue,
-        focused: idx === state.selection,
+        'focused bg-violetgray-50': idx === state.selection,
+        'selected text-white bg-juicyblue-100': option == props.modelValue,
+        'focused selected text-white bg-juicyblue-200':
+          idx === state.selection && option == props.modelValue,
       }"
-      @focus="state.selection = idx"
-      @click="toggleSelection(option)"
-      @keydown.left.prevent="$emit('update:modelValue', null)"
-      @keydown.right.prevent="$emit('update:modelValue', option)"
-      @keydown.down.prevent="incrementSelection"
-      @keydown.up.prevent="decrementSelection"
-      @keydown.space.prevent="toggleSelection(option)"
-      @keydown.exact="(evt) => onKeyDown(evt, option)"
+      @click="() => onClick({ idx })"
+      @mouseover="state.selection = idx"
       type="button"
       class="flex justify-between py-5 px-4.5 rounded-2.5xl border border-none shadow-ml outline-none focus:ring-1 focus:ring-juicyblue-100"
       ref="elements"

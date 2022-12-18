@@ -75,7 +75,7 @@ function scrollHandler(evt) {
     @scroll="scrollHandler"
     class="flex flex-col flex-1 px-4 pt-15 pb-6 bg-white overflow-scroll"
   >
-    <form class="flex flex-col text-brand-300 space-y-10">
+    <form class="flex flex-col text-violetgray-300 space-y-10">
       <h1 class="text-3xl font-bold">Invoice</h1>
       <div class="flex flex-col space-y-3">
         <h2 class="text-2xl font-semibold">Invoice information</h2>
@@ -108,7 +108,7 @@ function scrollHandler(evt) {
         <button
           @click="toggleContractorModal"
           type="button"
-          class="flex justify-center text-brand-100 py-5 px-4.5 rounded-2.5xl border border-dashed border-brand-100 outline-none focus:ring-1 focus:ring-juicyblue-100"
+          class="flex justify-center text-violetgray-100 py-5 px-4.5 rounded-2.5xl border border-dashed border-violetgray-100 outline-none focus:ring-1 focus:ring-juicyblue-100"
         >
           + new contractor
         </button>
@@ -120,7 +120,7 @@ function scrollHandler(evt) {
         <button
           @click="toggleClientModal"
           type="button"
-          class="flex justify-center text-brand-100 py-5 px-4.5 rounded-2.5xl border border-dashed border-brand-100 outline-none focus:ring-1 focus:ring-juicyblue-100"
+          class="flex justify-center text-violetgray-100 py-5 px-4.5 rounded-2.5xl border border-dashed border-violetgray-100 outline-none focus:ring-1 focus:ring-juicyblue-100"
         >
           + new client
         </button>
@@ -137,14 +137,14 @@ function scrollHandler(evt) {
 
         <button
           type="button"
-          class="flex justify-center text-brand-100 py-5 px-4.5 rounded-2.5xl border border-dashed border-brand-100"
+          class="flex justify-center text-violetgray-100 py-5 px-4.5 rounded-2.5xl border border-dashed border-violetgray-100"
         >
           + add item
         </button>
       </div>
 
       <span
-        class="self-end text-xl font-semibold p-4 border-2 border-brand-100 rounded-2.5xl"
+        class="self-end text-xl font-semibold p-4 border-2 border-violetgray-100 rounded-2.5xl"
         >Total {{ total.toFixed(2) }} USD</span
       >
 
