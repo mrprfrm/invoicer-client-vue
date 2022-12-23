@@ -1,6 +1,17 @@
 import { mount } from "@vue/test-utils";
 import FlatSelect from "@/components/FlatSelect.vue";
 
+const options = [
+  {
+    id: 1,
+    value: "IE Jones",
+  },
+  {
+    id: 2,
+    value: "IE Petrov",
+  },
+];
+
 describe("Pick options without initial state", () => {
   let wrapper;
 
@@ -9,16 +20,7 @@ describe("Pick options without initial state", () => {
       components: { FlatSelect },
       template: `<FlatSelect v-model="value" :options="options" />`,
       data: () => ({
-        options: [
-          {
-            id: 1,
-            value: "IE Jones",
-          },
-          {
-            id: 2,
-            value: "IE Petrov",
-          },
-        ],
+        options,
         value: null,
       }),
     });
@@ -32,19 +34,19 @@ describe("Pick options without initial state", () => {
   it("Click on an option should set select value", async () => {
     const option = wrapper.findAll("button")[0];
     await option.trigger("click");
-    expect(wrapper.vm.value).toBe(wrapper.vm.options[0]);
+    expect(wrapper.vm.value).toStrictEqual(options[0]);
   });
 
   it("Space key press on an option should set select value", async () => {
-    const option = wrapper.findAll("button")[0];
-    await option.trigger("keydown.space");
-    expect(wrapper.vm.value).toBe(wrapper.vm.options[0]);
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.space");
+    expect(wrapper.vm.value).toStrictEqual(options[0]);
   });
 
   it("Right key press on focused should select this optiion", async () => {
-    const option = wrapper.findAll("button")[0];
-    await option.trigger("keydown.right");
-    expect(wrapper.vm.value).toBe(wrapper.vm.options[0]);
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.right");
+    expect(wrapper.vm.value).toStrictEqual(options[0]);
   });
 
   it("Down key press should set next option focused", async () => {
@@ -56,17 +58,6 @@ describe("Pick options without initial state", () => {
 
 describe("Pick options with initial state", () => {
   let wrapper;
-
-  const options = [
-    {
-      id: 1,
-      value: "IE Jones",
-    },
-    {
-      id: 2,
-      value: "IE Petrov",
-    },
-  ];
 
   beforeEach(() => {
     wrapper = mount({
@@ -101,7 +92,8 @@ describe("Pick options with initial state", () => {
     expect(wrapper.vm.value).toBe(null);
   });
 
-  it("Up key press should set next option focused", async () => {
+  it("Up key press should set previous option focused", async () => {
+    await wrapper.trigger("focus");
     await wrapper.trigger("keydown.up");
     expect(wrapper.findAll("button")[0].classes("focused")).toBe(true);
   });

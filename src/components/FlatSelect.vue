@@ -2,7 +2,7 @@
 import { ref, defineProps, defineEmits, reactive } from "vue";
 import CheckIcon from "../icons/CheckIcon.vue";
 
-const props = defineProps(["modelValue", "options"]);
+const props = defineProps(["modelValue", "options", "display"]);
 const emit = defineEmits(["update:modelValue"]);
 
 const state = reactive({
@@ -103,7 +103,7 @@ function onFocus() {
       class="flex justify-between py-5 px-4.5 rounded-2.5xl border border-none shadow-ml outline-none focus:ring-1 focus:ring-juicyblue-100"
       ref="elements"
     >
-      <span>{{ option.name }}</span>
+      <span>{{ props.display ? option[props.display] : option }}</span>
       <CheckIcon v-if="option == props.modelValue"></CheckIcon>
     </button>
   </div>
