@@ -2,36 +2,38 @@
 import { ref } from "vue";
 
 import DropdownSelect from "../components/DropdownSelect.vue";
-import TextInput from "../components/TextInput.vue";
 
 const currencies = ref(["USD", "RUB", "EUR"]);
 const dates = ref(["year", "month", "week", "day"]);
+
+const currency = ref(null);
+const date = ref(null);
 </script>
 
 <template>
   <form
-    class="pt-6 pb-5 px-4 space-y-3 rounded-2.5xl text-brand-300 bg-brand-gradient"
+    class="pt-6 pb-5 px-4 space-y-3 rounded-2.5xl text-violetgray-300 bg-violetgray-gradient"
   >
-    <TextInput
-      name="description"
-      label="Description"
-      placeholder="Enter description"
-      class="text-white"
-    ></TextInput>
+    <div class="flex flex-col space-y-1.5 text-base">
+      <label class="text-white">Description</label>
+      <input type="text" placeholder="Enter description" />
+    </div>
 
     <div class="flex flex-col space-y-1.5 text-base">
       <span class="text-white">Quantity</span>
-      <div class="relative flex w-full bg-white rounded-2.5xl">
-        <TextInput
-          name="quantity"
+      <div
+        class="relative flex w-full bg-white rounded-2.5xl shadow-inner-violetgray"
+      >
+        <input
+          type="number"
+          class="w-full !rounded-r-none !shadow-none !bg-transparent"
           placeholder="Enter quantity"
-          class="flex-1 min-w-0"
-        ></TextInput>
+        />
         <DropdownSelect
           :default="dates[1]"
           :options="dates"
-          class="z-10 !absolute right-0"
-          select-class="bg-transparent"
+          v-model="date"
+          class="right-0 bg-transparent"
           name="date"
         ></DropdownSelect>
       </div>
@@ -39,28 +41,29 @@ const dates = ref(["year", "month", "week", "day"]);
 
     <div class="flex flex-col space-y-1 text-base">
       <span class="text-white">Price</span>
-      <div class="relative flex w-full bg-white rounded-xl">
-        <TextInput
-          name="price"
+      <div
+        class="relative flex w-full bg-white rounded-2.5xl shadow-inner-violetgray"
+      >
+        <input
+          type="number"
+          class="w-full !rounded-r-none !shadow-none !bg-transparent"
           placeholder="Enter price"
-          class="flex-1 min-w-0"
-        ></TextInput>
+        />
+
         <DropdownSelect
           :default="currencies[0]"
           :options="currencies"
-          class="z-10 !absolute right-0"
-          select-class="bg-transparent"
+          v-model="currency"
+          class="right-0 bg-transparent"
           name="currency"
         ></DropdownSelect>
       </div>
     </div>
 
-    <TextInput
-      name="amount"
-      label="Amount"
-      placeholder="Enter amount"
-      class="text-white"
-    ></TextInput>
+    <div class="flex flex-col space-y-1.5 text-base">
+      <label class="text-white">Amount</label>
+      <input type="number" placeholder="Enter amount" />
+    </div>
 
     <div class="flex space-x-2.5">
       <button

@@ -104,7 +104,11 @@ function scrollHandler(evt) {
 
       <div class="flex flex-col space-y-3">
         <h2 class="text-2xl font-semibold">Choose contractor</h2>
-        <FlatSelect v-model="contractor" :options="contractors" />
+        <FlatSelect
+          v-model="contractor"
+          display="name"
+          :options="contractors"
+        />
         <button
           @click="toggleContractorModal"
           type="button"
@@ -116,7 +120,7 @@ function scrollHandler(evt) {
 
       <div class="flex flex-col space-y-3">
         <h2 class="text-2xl font-semibold">Choose client</h2>
-        <FlatSelect v-model="client" :options="clients"></FlatSelect>
+        <FlatSelect v-model="client" display="name" :options="clients" />
         <button
           @click="toggleClientModal"
           type="button"

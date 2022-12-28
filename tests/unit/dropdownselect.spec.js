@@ -1,111 +1,78 @@
-import { shallowMount } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
 import DropdownSelect from "@/components/DropdownSelect.vue";
 
 const options = ["year", "month", "week", "day"];
 
-describe("Mouse click selection test", () => {
+describe("Pick options without initial state", () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallowMount(DropdownSelect, {
-      props: { options, default: "year" },
+    wrapper = mount({
+      components: { DropdownSelect },
+      template: `<DropdownSelect v-model="value" :options="options" />`,
+      data: () => ({
+        options,
+        value: null,
+      }),
     });
   });
 
-  it("Select focused", async () => {
-    const select = wrapper.find("button");
-    await select.trigger("focus");
-    expect(wrapper.find(".options").exists()).toBe(false);
-  });
-
-  it("Select focus lost", async () => {
-    const select = wrapper.find("button");
-
-    await select.trigger("click");
-    expect(wrapper.find(".options").exists()).toBe(true);
-
-    await select.trigger("blur");
-    expect(wrapper.find(".options").exists()).toBe(false);
-  });
-
-  it("Dropdown options displayed", async () => {
-    const select = wrapper.find("button");
-    await select.trigger("click");
-
+  it("Click on DropdownSelect should display the dropdown", async () => {
+    await wrapper.find("button").trigger("click");
     expect(wrapper.find(".options").exists()).toBe(true);
   });
 
-  it("Select an option", async () => {
-    const select = wrapper.find("button");
-    await select.trigger("click");
-
-    await wrapper.find(".options").findAll("button")[1].trigger("click");
-
-    expect(select.text()).toBe(options[1]);
-    expect(wrapper.find(".options").exists()).toBe(false);
+  it("Click on an option should set select value", async () => {
+    await wrapper.find("button").trigger("click");
+    const options = wrapper.find(".options");
+    await options.findAll("button")[0].trigger("click");
+    expect(wrapper.vm.vallue).toStrictEqual(options[0]);
   });
 
-  it("Select another option", async () => {
-    const select = wrapper.find("button");
-    await select.trigger("click");
+  it("Space key press should select first option", async () => {
+    await wrapper.find("button").trigger("click");
+    await wrapper.trigger("keydown.space");
+    expect(wrapper.vm.value).toStrictEqual(options[0]);
+  });
 
-    await wrapper.find(".options").findAll("button")[2].trigger("click");
-    expect(select.text()).toBe(options[2]);
-    expect(wrapper.find(".options").exists()).toBe(false);
+  it("Right key press on selected options should  ", async () => {
+    await wrapper.trigger("keydown.right");
+    expect(wrapper.vm.value).toStrictEqual(options[0]);
+  });
+
+  it("Down key press should set next option focused", async () => {
+    await wrapper.find("button").trigger("click");
+    await wrapper.trigger("keydown.down");
+    const options = wrapper.find(".options");
+    expect(options.findAll("button")[1].classes("focused")).toBe(true);
   });
 });
 
-describe("Keys press selection test", () => {
+describe("Pick options with initial state", () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallowMount(DropdownSelect, {
-      props: { options, default: "year" },
+    wrapper = mount({
+      components: { DropdownSelect },
+      template: `<DropdownSelect v-model="value" :options="options" />`,
+      data: () => ({
+        options,
+        value: options[1],
+      }),
     });
   });
 
-  it("Select focus lost", async () => {
-    const select = wrapper.find("button");
-
-    await select.trigger("keydown.space");
+  it("If select blured then options list should be hidden", async () => {
+    await wrapper.find("button").trigger("click");
     expect(wrapper.find(".options").exists()).toBe(true);
-
-    await select.trigger("blur");
+    await wrapper.find("button").trigger("blur");
     expect(wrapper.find(".options").exists()).toBe(false);
   });
 
-  it("Options opened", async () => {
-    const select = wrapper.find("button");
-
-    await select.trigger("keydown.space");
-    expect(wrapper.find(".options").exists()).toBe(true);
-  });
-
-  it("Select select an option", async () => {
-    const select = wrapper.find("button");
-
-    await select.trigger("keydown.space");
-    expect(wrapper.find(".options").exists()).toBe(true);
-
-    await select.trigger("keydown.down");
-    await select.trigger("keydown.space");
-
-    expect(select.text()).toBe(options[1]);
-    expect(wrapper.find(".options").exists()).toBe(false);
-  });
-
-  it("Select another option", async () => {
-    const select = wrapper.find("button");
-
-    await select.trigger("focus");
-    await select.trigger("keydown.space");
-    expect(wrapper.find(".options").exists()).toBe(true);
-
-    await select.trigger("keydown.down");
-    await select.trigger("keydown.down");
-    await select.trigger("keydown.space");
-
-    expect(select.text()).toBe(options[2]);
-    expect(wrapper.find(".options").exists()).toBe(false);
+  it("Up key press should set previous option focused", async () => {
+    await wrapper.find("button").trigger("click");
+    await wrapper.trigger("keydown.up");
+    const options = wrapper.find(".options");
+    expect(options.findAll("button")[0].classes("focused")).toBe(true);
   });
 });

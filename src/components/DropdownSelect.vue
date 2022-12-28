@@ -1,137 +1,125 @@
 <script setup>
-import { ref, computed, defineProps, defineEmits } from "vue";
+import { ref, defineProps, defineEmits, reactive } from "vue";
 
 import ChevronDown from "../icons/ChevronDown.vue";
 import CheckIcon from "../icons/CheckIcon.vue";
 import ChevronUp from "../icons/ChevronUp.vue";
 
-const props = defineProps([
-  "name",
-  "label",
-  "options",
-  "default",
-  "selectClass",
-  "modelValue",
-]);
+const props = defineProps(["modelValue", "display", "placeholder", "options"]);
 
 const emit = defineEmits(["update:modelValue"]);
 
+const state = reactive({
+  selection: 0,
+  blurable: true,
+  opened: false,
+});
+
 const select = ref(null);
-const selection = ref(null);
-const selected = ref(null);
-const isOpened = ref(false);
-const isBlurable = ref(true);
 
-const current = computed(() => selected.value || props.default || "---");
-
-function blurSelect(evt) {
-  if (isBlurable.value) {
-    isOpened.value = false;
+function onBlur() {
+  if (!state.blurable) {
+    select.value.focus();
   } else {
-    evt.preventDefault();
+    state.opened = false;
   }
 }
 
-function disableBlur() {
-  isBlurable.value = false;
-}
-
-function enableBlur() {
-  isBlurable.value = true;
-  select.value.focus();
-}
-
-function toggleOptions() {
-  isOpened.value = !isOpened.value;
-  selection.value = props.options.indexOf(selected.value || props.default);
-}
-
-function selectOption(option) {
-  selected.value = option;
-  isOpened.value = false;
+function onOptionClick({ option }) {
   emit("update:modelValue", option);
+  state.opened = false;
 }
 
 function incrementSelection() {
-  if (selection.value < props.options.length - 1) {
-    selection.value++;
+  if (state.selection < props.options.length - 1) {
+    state.selection++;
   }
 }
 
 function decrementSelection() {
-  if (selection.value > 0) {
-    selection.value--;
+  if (state.selection > 0) {
+    state.selection--;
   }
 }
 
-function spaceHandler() {
-  if (isOpened.value) {
-    selectOption(props.options[selection.value]);
+function onSpace() {
+  if (state.opened) {
+    const option = props.options[state.selection];
+    state.opened = false;
+    emit("update:modelValue", option);
   } else {
-    toggleOptions();
+    state.opened = true;
   }
 }
 
-function keypressHandler(evt) {
-  switch (evt.keyCode) {
-    case 8:
-      return;
-    case 9:
-      return;
-    case 74:
-      evt.preventDefault();
-      incrementSelection();
-      return;
-    case 75:
-      evt.preventDefault();
-      decrementSelection();
-      return;
-    default:
-      evt.preventDefault();
+function onRight() {
+  const option = props.options[state.selection];
+  state.opened = false;
+  emit("update:modelValue", option);
+}
+
+function onKeyDown(evt) {
+  if (evt.keyCode === 74) {
+    incrementSelection();
+  } else if (evt.keyCode === 75) {
+    decrementSelection();
   }
 }
 </script>
 
 <template>
-  <div class="relative flex flex-col space-y-1 text-base">
-    <label v-if="label" :for="name">{{ label }}</label>
+  <div
+    @keydown.right="onRight"
+    @keydown.up.prevent="decrementSelection"
+    @keydown.down.prevent="incrementSelection"
+    @keydown.space.prevent="onSpace"
+    @keydown.exact="onKeyDown"
+    class="relative flex flex-col space-y-1 text-base bg-white rounded-2.5xl text-violetgray-400"
+  >
     <!-- Hide dropdown on esc click -->
     <button
-      @click="toggleOptions"
-      @blur="blurSelect"
-      @keydown.up="decrementSelection"
-      @keydown.down="incrementSelection"
-      @keydown.space.prevent="spaceHandler"
-      @keydown.shift.exact="keypressHandler"
-      @keydown.exact="keypressHandler"
-      :class="selectClass"
-      class="flex items-center justify-between space-x-3.5 py-3.5 px-4 bg-white text-brand-400 rounded-xl cursor-pointer outline-none"
+      @click="state.opened = !state.opened"
+      @blur="onBlur"
+      class="flex items-center justify-between space-x-4 py-5 px-4 cursor-pointer outline-none focus:ring-juicyblue-100 focus:ring-1"
       type="button"
-      tabindex="0"
       ref="select"
     >
-      <span>{{ current }}</span>
-      <!-- Replace chevron with select marker -->
-      <ChevronDown v-if="!isOpened"></ChevronDown>
-      <ChevronUp v-if="isOpened"></ChevronUp>
+      <span v-if="props.modelValue">{{
+        props.display ? props.modelValue[props.display] : props.modelValue
+      }}</span>
+      <span v-if="!props.modelValue && props.placeholder">
+        {{ props.placeholder }}
+      </span>
+      <span
+        class="whitespace-nowrap"
+        v-if="!props.modelValue && !props.placeholder"
+        >---</span
+      >
+      <ChevronDown v-if="!state.opened"></ChevronDown>
+      <ChevronUp v-if="state.opened"></ChevronUp>
     </button>
+
     <div
-      v-if="isOpened"
-      class="options z-10 absolute flex flex-col flex-auto self-end space-y-7.5 top-full mt-2 py-7.5 pl-7.5 pr-4 bg-white rounded-xl text-brand-400 shadow-ml"
+      v-if="state.opened"
+      class="options z-20 absolute flex flex-col flex-auto self-end top-full mt-2 py-3.75 bg-white rounded-2.5xl shadow-ml"
     >
       <button
         v-for="(option, idx) in options"
-        @mouseup="enableBlur"
-        @mousedown="disableBlur"
-        @click="selectOption(option)"
+        @mousedown="state.blurable = false"
+        @mouseup="state.blurable = true"
+        @click="() => onOptionClick({ option })"
         :key="idx"
         :tabindex="-1"
-        class="flex justify-end items-center space-x-4"
+        :class="{
+          'focused bg-violetgray-50': idx === state.selection,
+        }"
+        class="flex justify-end items-center space-x-4 py-3.75 pl-7.5 pr-4"
         type="button"
       >
-        <ChevronDown v-if="idx === selection"></ChevronDown>
-        <span :class="{ 'pr-10': option != current }"> {{ option }} </span>
-        <CheckIcon v-if="option === current"></CheckIcon>
+        <span :class="{ 'pr-10': option != props.modelValue }">
+          {{ props.display ? option[props.display] : option }}
+        </span>
+        <CheckIcon v-if="option === props.modelValue"></CheckIcon>
       </button>
     </div>
   </div>
