@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, defineProps } from "vue";
 
-const props = defineProps(["name", "placeholder", "label", "allowNewLines"]);
+const props = defineProps(["name", "placeholder", "allowNewLines"]);
 
 const content = ref(null);
 const text = computed(() =>
@@ -21,22 +21,21 @@ function enterHandler(evt) {
 
 <template>
   <div class="flex flex-col space-y-1.5 text-base">
-    <label :for="name">{{ label }}</label>
     <div class="relative flex flex-col">
       <div v-if="isNewLinesAllowed" class="flex flex-col">
         <span
           v-for="(itm, idx) in text"
           :key="idx"
-          class="whitespace-pre-line break-all first:pt-3.5 last:pb-3.5 px-4 text-transparent"
+          class="whitespace-pre-wrap break-words first:pt-5 last:pb-5 px-4.5 text-transparent"
         >
-          {{ itm || placeholder }}
+          {{ itm || placeholder || "NONE" }}
         </span>
       </div>
 
       <span
         v-if="!isNewLinesAllowed"
-        class="whitespace-pre-line break-all first:py-3.5 px-4 text-transparent"
-        >{{ content || placeholder }}</span
+        class="whitespace-pre-wrap break-words first:py-5 px-4.5 text-transparent"
+        >{{ content || placeholder || "NONE" }}</span
       >
       <textarea
         :id="name"
@@ -45,7 +44,7 @@ function enterHandler(evt) {
         @input="content = $event.target.value"
         @keydown.enter="enterHandler"
         type="text"
-        class="absolute inset-0 z-10 py-3.5 px-4 border-none resize-none rounded-xl focus:ring-juicyblue-100 placeholder:text-violetgray-50 selection:bg-violetgray-100 shadow-inner-violetgray"
+        class="absolute inset-0 z-10 py-5 px-4.5 shadow-inner-violetgray rounded-2.5xl border-none placeholder:text-violetgray-100 focus:ring-1 focus:ring-juicyblue-100"
       />
     </div>
   </div>

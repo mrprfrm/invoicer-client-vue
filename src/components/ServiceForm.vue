@@ -2,6 +2,7 @@
 import { ref } from "vue";
 
 import DropdownSelect from "../components/DropdownSelect.vue";
+import TextArea from "./TextArea.vue";
 
 const currencies = ref(["USD", "RUB", "EUR"]);
 const dates = ref(["year", "month", "week", "day"]);
@@ -16,7 +17,7 @@ const date = ref(null);
   >
     <div class="flex flex-col space-y-1.5 text-base">
       <label class="text-white">Description</label>
-      <input type="text" placeholder="Enter description" />
+      <TextArea placeholder="Enter description" allow-new-lines="false" />
     </div>
 
     <div class="flex flex-col space-y-1.5 text-base">
