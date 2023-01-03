@@ -44,12 +44,22 @@ module.exports = {
         18.5: "4.625rem", //74px
         42: "10.5rem", //168px
       },
+      fontFamily: {
+        inter: ["inter"],
+      },
     },
   },
 
   plugins: [
     require("@tailwindcss/typography"),
     require("@tailwindcss/forms"),
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        ".moz-appearance-none": {
+          "-moz-appearance": "textfield",
+        },
+      });
+    }),
     plugin(function ({ addUtilities }) {
       addUtilities({
         'input[type="date"]::-webkit-calendar-picker-indicator': {
