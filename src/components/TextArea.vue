@@ -43,8 +43,7 @@ function enterHandler(evt) {
         :placeholder="placeholder"
         @input="content = $event.target.value"
         @keydown.enter="enterHandler"
-        type="text"
-        class="absolute inset-0 z-10 py-5 px-4.5 shadow-inner-violetgray rounded-2.5xl border-none placeholder:text-violetgray-100 focus:ring-1 focus:ring-juicyblue-100"
+        class="absolute inset-0 z-10 py-5 px-4.5 w-full h-full shadow-inner-violetgray rounded-2.5xl border-none placeholder:text-violetgray-100 focus:ring-1 focus:ring-juicyblue-100"
       />
     </div>
   </div>
