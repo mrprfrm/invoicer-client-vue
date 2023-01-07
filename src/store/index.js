@@ -1,32 +1,13 @@
 import { createStore } from "vuex";
 
+import clients from "./clients";
+import invoices from "./invoices";
+import contractors from "./contractors";
+
 export default createStore({
-  state: {
-    clientModalOpened: false,
-    contractorModalOpened: false,
+  modules: {
+    clients,
+    invoices,
+    contractors,
   },
-  getters: {},
-  mutations: {
-    SET_CLIENT_MODAL_OPENED(state, value) {
-      state.clientModalOpened = value;
-    },
-    SET_CONTRACTOR_MODAL_OPENED(state, value) {
-      state.contractorModalOpened = value;
-    },
-  },
-  actions: {
-    TOGGLE_CLIENT_MODAL({ state, commit }) {
-      commit("SET_CLIENT_MODAL_OPENED", !state.clientModalOpened);
-    },
-    CLOSE_CLIENT_MODAL({ commit }) {
-      commit("SET_CLIENT_MODAL_OPENED", false);
-    },
-    TOGGLE_CONTRACTOR_MODAL({ state, commit }) {
-      commit("SET_CONTRACTOR_MODAL_OPENED", !state.contractorModalOpened);
-    },
-    CLOSE_CONTRACTOR_MODAL({ commit }) {
-      commit("SET_CONTRACTOR_MODAL_OPENED", false);
-    },
-  },
-  modules: {},
 });
