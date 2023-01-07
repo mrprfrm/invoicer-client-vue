@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
-import InvoiceFormView from "../views/InvoiceFormView.vue";
+import InvoiceEditor from "../views/InvoiceEditor.vue";
 
 const routes = [
   {
     path: "/",
     name: "home",
-    component: InvoiceFormView,
+    component: InvoiceEditor,
   },
 ];
 
