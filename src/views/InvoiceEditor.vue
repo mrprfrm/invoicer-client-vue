@@ -1,6 +1,6 @@
 <script setup>
 import { useStore } from "vuex";
-import { ref, computed } from "vue";
+import { reactive } from "vue";
 
 import ChevronDown from "@/icons/ChevronDown.vue";
 import ChevronUp from "@/icons/ChevronUp.vue";
@@ -15,55 +15,22 @@ import ServiceForm from "@/components/ServiceForm.vue";
 
 const store = useStore();
 
-const isTermsOpened = ref(false);
-
-const dtValue = ref({ day: 5, month: 2, year: 2020 });
-const contractor = ref(null);
-const client = ref(null);
-
-const contractors = ref([
-  {
-    id: 1,
-    name: "IE Petrov Anton Sergeevich",
-  },
-  {
-    id: 2,
-    name: "IE Petrov",
-  },
-]);
-
-const clients = ref([
-  {
-    id: 1,
-    name: "NITKA, INC., Virgin Islands, British",
-  },
-]);
-
-const services = ref([
-  {
-    id: 1,
-    description: "Payment by contract NTK-AP-1",
-    quantity: 2,
-    range: "month",
-    amount: 1,
-    price: 9873.0,
-  },
-]);
-
-const clientModalOpened = computed(() => store.state.clientModalOpened);
-const contractorModalOpened = computed(() => store.state.contractorModalOpened);
+const state = reactive({
+  termsOpened: false,
+});
 
 const toggleClientModal = () => store.dispatch("TOGGLE_CLIENT_MODAL");
 const toggleContractorModal = () => store.dispatch("TOGGLE_CONTRACTOR_MODAL");
 
-const total = computed(() =>
-  services.value
-    .filter((itm) => itm.price)
-    .reduce((val, itm) => (val += itm.price), 0)
-);
+const total = 0;
+/* const total = computed(() => */
+/*   services.value */
+/*     .filter((itm) => itm.price) */
+/*     .reduce((val, itm) => (val += itm.price), 0) */
+/* ); */
 
-function scrollHandler(evt) {
-  if (clientModalOpened.value || contractorModalOpened.value) {
+function onScroll(evt) {
+  if (store.state.clients.opened || store.state.contractors.opened) {
     evt.preventDefault();
   }
 }
@@ -71,8 +38,7 @@ function scrollHandler(evt) {
 
 <template>
   <div
-    v-on:scroll="scrollHandler"
-    @scroll="scrollHandler"
+    @scroll="onScroll"
     class="flex flex-col flex-1 px-4 pt-15 pb-6 bg-white overflow-scroll"
   >
     <form class="flex flex-col text-violetgray-300 space-y-10">
@@ -82,22 +48,30 @@ function scrollHandler(evt) {
         <fieldset id="invoice-fields" class="space-y-3 flex flex-col">
           <div class="flex flex-col space-y-1.5">
             <label>Invoice name</label>
-            <input type="text" placeholder="Enter name" />
+            <input
+              type="text"
+              placeholder="Enter name"
+              v-model="store.state.invoices.invoiceName"
+            />
           </div>
 
           <div class="flex flex-col space-y-1.5">
             <label>Invoice date</label>
-            <DateField v-model="dtValue" />
+            <DateField v-model="store.state.invoices.invoiceDate" />
           </div>
 
           <div class="flex flex-col space-y-1.5">
             <label>Contract name</label>
-            <input type="text" placeholder="Enter name" />
+            <input
+              type="text"
+              placeholder="Enter name"
+              v-model="store.state.invoices.contractName"
+            />
           </div>
 
           <div class="flex flex-col space-y-1.5">
             <label>Contract date</label>
-            <DateField v-model="dtValue" />
+            <DateField v-model="store.state.invoices.contractDate" />
           </div>
         </fieldset>
       </div>
@@ -105,9 +79,10 @@ function scrollHandler(evt) {
       <div class="flex flex-col space-y-3">
         <h2 class="text-2xl font-semibold">Choose contractor</h2>
         <FlatSelect
-          v-model="contractor"
+          v-if="store.state.contractors.contractors.lenght > 0"
+          v-model="store.state.invoices.contractor"
           display="name"
-          :options="contractors"
+          :options="store.state.contractors.contractors"
         />
         <button
           @click="toggleContractorModal"
@@ -120,7 +95,12 @@ function scrollHandler(evt) {
 
       <div class="flex flex-col space-y-3">
         <h2 class="text-2xl font-semibold">Choose client</h2>
-        <FlatSelect v-model="client" display="name" :options="clients" />
+        <FlatSelect
+          v-if="store.state.clients.clients.length > 0"
+          v-model="store.state.invoices.client"
+          display="name"
+          :options="store.state.clients.clients"
+        />
         <button
           @click="toggleClientModal"
           type="button"
@@ -133,7 +113,7 @@ function scrollHandler(evt) {
       <div class="flex flex-col space-y-3">
         <h2 class="text-2xl font-semibold">Goods and services</h2>
         <ServiceCard
-          v-for="service in services"
+          v-for="service in store.state.invoices.services"
           :key="service.id"
           :service="service"
         ></ServiceCard>
@@ -154,18 +134,19 @@ function scrollHandler(evt) {
 
       <div class="flex flex-col space-y-2.5">
         <button
-          @click="isTermsOpened = !isTermsOpened"
+          @click="state.termsOpened = !state.termsOpened"
           class="flex flex-row justify-between items-center"
           type="button"
         >
           <h2 class="text-xl font-bold">Terms & Conditions</h2>
-          <ChevronDown v-if="!isTermsOpened"></ChevronDown>
-          <ChevronUp v-if="isTermsOpened"></ChevronUp>
+          <ChevronDown v-if="!state.termsOpened"></ChevronDown>
+          <ChevronUp v-if="state.termsOpened"></ChevronUp>
         </button>
-        <div v-if="isTermsOpened">
+        <div v-if="state.termsOpened">
           <TextForm
             name="terms"
             placeholder="Enter terms and conditions"
+            v-model="store.state.invoices.terms"
           ></TextForm>
         </div>
       </div>
@@ -178,7 +159,7 @@ function scrollHandler(evt) {
       </button>
     </form>
 
-    <ClientModal v-if="clientModalOpened"></ClientModal>
-    <ContractorModal v-if="contractorModalOpened"></ContractorModal>
+    <ClientModal v-if="store.state.clients.opened"></ClientModal>
+    <ContractorModal v-if="store.state.contractors.opened"></ContractorModal>
   </div>
 </template>
