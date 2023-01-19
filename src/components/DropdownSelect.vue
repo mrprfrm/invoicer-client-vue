@@ -1,11 +1,24 @@
 <script setup>
-import { ref, defineProps, defineEmits, reactive } from "vue";
+import {
+  ref,
+  computed,
+  defineProps,
+  defineEmits,
+  reactive,
+  onMounted,
+} from "vue";
 
 import ChevronDown from "../icons/ChevronDown.vue";
 import CheckIcon from "../icons/CheckIcon.vue";
 import ChevronUp from "../icons/ChevronUp.vue";
 
-const props = defineProps(["modelValue", "display", "placeholder", "options"]);
+const props = defineProps([
+  "modelValue",
+  "display",
+  "placeholder",
+  "options",
+  "default",
+]);
 
 const emit = defineEmits(["update:modelValue"]);
 
@@ -17,6 +30,23 @@ const state = reactive({
 
 const select = ref(null);
 
+const displayValue = computed(() => {
+  if (props.modelValue) {
+    return props.display ? props.modelValue[props.display] : props.modelValue;
+  } else if (props.default) {
+    return props.display ? props.default[props.display] : props.default;
+  } else if (props.placeholder) {
+    return props.placeholder;
+  }
+  return "---";
+});
+
+onMounted(() => {
+  if (props.default && !props.modelValue) {
+    emit("update:modelValue", props.default);
+  }
+});
+
 function onBlur() {
   if (!state.blurable) {
     select.value.focus();
@@ -27,6 +57,7 @@ function onBlur() {
 
 function onOptionClick({ option }) {
   emit("update:modelValue", option);
+  state.selection = props.options.indexOf(option);
   state.opened = false;
 }
 
@@ -69,6 +100,7 @@ function onKeyDown(evt) {
 
 <template>
   <div
+    @keydown.esc="state.opened = false"
     @keydown.right="onRight"
     @keydown.up.prevent="decrementSelection"
     @keydown.down.prevent="incrementSelection"
@@ -84,17 +116,7 @@ function onKeyDown(evt) {
       type="button"
       ref="select"
     >
-      <span v-if="props.modelValue">{{
-        props.display ? props.modelValue[props.display] : props.modelValue
-      }}</span>
-      <span v-if="!props.modelValue && props.placeholder">
-        {{ props.placeholder }}
-      </span>
-      <span
-        class="whitespace-nowrap"
-        v-if="!props.modelValue && !props.placeholder"
-        >---</span
-      >
+      <span>{{ displayValue }}</span>
       <ChevronDown v-if="!state.opened"></ChevronDown>
       <ChevronUp v-if="state.opened"></ChevronUp>
     </button>
