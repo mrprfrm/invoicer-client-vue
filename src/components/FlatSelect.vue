@@ -105,6 +105,7 @@ function onFocus() {
       ref="elements"
     >
       <span>{{ props.display ? option[props.display] : option }}</span>
+      <!-- TODO: add background with the shadow -->
       <CheckIcon v-if="option == props.modelValue"></CheckIcon>
     </button>
   </div>
