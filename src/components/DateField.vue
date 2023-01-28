@@ -4,7 +4,6 @@ import { reactive, ref, watch, computed, defineProps, defineEmits } from "vue";
 import DatePicker from "@/components/DatePicker.vue";
 import DateInput from "@/components/DateInput.vue";
 
-const field = ref(null);
 const state = reactive({
   fieldValue: null,
   lastNonEmptySection: null,
@@ -15,6 +14,8 @@ const state = reactive({
 
 const props = defineProps(["modelValue"]);
 const emit = defineEmits(["update:modelValue"]);
+
+const field = ref(null);
 
 const value = computed({
   get() {
