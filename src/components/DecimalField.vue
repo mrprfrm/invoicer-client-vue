@@ -23,8 +23,14 @@ const innerValue = computed({
 
 const input = ref(null);
 
-const props = defineProps(["modelValue", "class", "placeholder"]);
-const emit = defineEmits(["update:modelValue"]);
+const props = defineProps([
+  "modelValue",
+  "class",
+  "placeholder",
+  "required",
+  "error",
+]);
+const emit = defineEmits(["update:modelValue", "update:error"]);
 
 function formatDecimal(value) {
   // If value zero or period symbol
@@ -49,6 +55,8 @@ function formatDecimal(value) {
 
   return integer ? `${integer}.${decimal}` : `0.${decimal}`;
 }
+
+// TODO: add handlers for up and down key press
 
 function onKeydown(evt) {
   // Key codes for Tab, Backspace, Enter, Delete and period
@@ -117,7 +125,16 @@ function onDelete(evt) {
 }
 
 function onInput(evt) {
+  if (props.error) {
+    emit("update:error", null);
+  }
   evt.target.setSelectionRange(state.cursorPosition, state.cursorPosition);
+}
+
+function onBlur() {
+  if (props.required && !props.modelValue) {
+    emit("update:error", `Field is required`);
+  }
 }
 </script>
 
@@ -125,11 +142,18 @@ function onInput(evt) {
   <input
     ref="input"
     type="text"
+    @keydown.up="
+      $emit('update:modelValue', props.modelValue ? props.modelValue + 1 : 1)
+    "
+    @keydown.down="
+      $emit('update:modelValue', props.modelValue ? props.modelValue - 1 : 0)
+    "
     @keydown.exact="onKeydown"
     @keydown.meta.backspace.exact="onBackspace"
     @keydown.backspace.exact="onBackspace"
     @keydown.delete.exact="onDelete"
     @input="onInput"
+    @blur="onBlur"
     v-model="innerValue"
     :class="props.class"
     :placeholder="props.placeholder"

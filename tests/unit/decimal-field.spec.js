@@ -7,8 +7,8 @@ describe("Decimal field input test without initial state", () => {
   beforeEach(() => {
     wrapper = mount({
       components: { DecimalField },
-      template: `<DecimalField v-model="value" />`,
-      data: () => ({ value: null }),
+      template: `<DecimalField v-model="value" v-model:error="error" :required="true" />`,
+      data: () => ({ value: null, error: null }),
     });
   });
 
@@ -48,7 +48,7 @@ describe("Decimal field input test without initial state", () => {
     expect(wrapper.element.value).toBe("0.12");
   });
 
-  it("Input 1 should set value as 0.00", async () => {
+  it("Input 1 should set value as 1.00", async () => {
     await wrapper.trigger("focus");
     await wrapper.find("input").setValue("1");
     expect(wrapper.element.value).toBe("1.00");
@@ -64,5 +64,11 @@ describe("Decimal field input test without initial state", () => {
     await wrapper.trigger("focus");
     await wrapper.find("input").setValue("1.01");
     expect(wrapper.element.value).toBe("1.01");
+  });
+
+  it("If required field blured with empty value then filed should be highlighted", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("blur");
+    expect(wrapper.vm.error).not.toBeNull();
   });
 });
