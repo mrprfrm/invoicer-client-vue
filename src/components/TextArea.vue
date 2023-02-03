@@ -3,12 +3,15 @@ import { computed, defineProps, defineEmits } from "vue";
 
 const props = defineProps([
   "name",
+  "class",
   "placeholder",
   "allowNewLines",
   "modelValue",
+  "required",
+  "error",
 ]);
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "update:error"]);
 
 const text = computed({
   get() {
@@ -32,10 +35,20 @@ function onEnter(evt) {
     evt.preventDefault();
   }
 }
+
+function onInput() {
+  emit("update:error", null);
+}
+
+function onBlur() {
+  if (props.required && !props.modelValue) {
+    emit("update:error", "Field is required");
+  }
+}
 </script>
 
 <template>
-  <div class="flex flex-col space-y-1.5 text-base">
+  <div class="flex flex-col space-y-1.5 text-base w-full">
     <div class="relative flex flex-col">
       <div v-if="newLinesAllowed" class="flex flex-col">
         <span
@@ -59,7 +72,11 @@ function onEnter(evt) {
         v-model="text"
         @input="onInput"
         @keydown.enter="onEnter"
-        class="absolute inset-0 z-10 py-5 px-4.5 w-full h-full shadow-inner-violetgray rounded-2.5xl border-none placeholder:text-violetgray-100 focus:ring-1 focus:ring-juicyblue-100"
+        @blur="onBlur"
+        :class="[
+          'absolute inset-0 z-10 py-5 px-4.5 w-full h-full shadow-inner-violetgray rounded-2.5xl border-none placeholder:text-violetgray-100 focus:ring-1 focus:ring-juicyblue-100',
+          props.class,
+        ]"
       />
     </div>
   </div>
