@@ -8,9 +8,9 @@ import {
   onMounted,
 } from "vue";
 
-import ChevronDown from "../icons/ChevronDown.vue";
-import CheckIcon from "../icons/CheckIcon.vue";
-import ChevronUp from "../icons/ChevronUp.vue";
+import ChevronDown from "@/icons/ChevronDown.vue";
+import CheckIcon from "@/icons/CheckIcon.vue";
+import ChevronUp from "@/icons/ChevronUp.vue";
 
 const props = defineProps([
   "modelValue",
