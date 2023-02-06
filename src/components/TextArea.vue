@@ -66,7 +66,6 @@ function onBlur() {
         >{{ text || placeholder || "NONE" }}</span
       >
       <textarea
-        :id="name"
         :name="name"
         :placeholder="placeholder"
         v-model="text"

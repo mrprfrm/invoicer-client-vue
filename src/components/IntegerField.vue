@@ -13,6 +13,7 @@ const innerValue = computed({
 const input = ref(null);
 
 const props = defineProps([
+  "name",
   "modelValue",
   "class",
   "placeholder",
@@ -55,6 +56,7 @@ function onBlur() {
     @input="onInput"
     @blur="onBlur"
     v-model="innerValue"
+    :name="name"
     :class="props.class"
     :placeholder="props.placeholder"
   />

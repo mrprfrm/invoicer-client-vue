@@ -1,70 +1,124 @@
 <script setup>
-import { ref } from "vue";
+import { useStore } from "vuex";
+import { computed, reactive, defineProps, onMounted } from "vue";
 
-import DropdownSelect from "../components/DropdownSelect.vue";
-import TextArea from "./TextArea.vue";
+import FieldGroup from "@/components/FieldGroup.vue";
 
-const currencies = ref(["USD", "RUB", "EUR"]);
-const dates = ref(["year", "month", "week", "day"]);
+import DecimalField from "@/components/DecimalField.vue";
+import IntegerField from "@/components/IntegerField.vue";
+import DropdownSelect from "@/components/DropdownSelect.vue";
+import TextArea from "@/components/TextArea.vue";
 
-const currency = ref(null);
-const date = ref(null);
+// Constants which used as currencies and dates values
+const CURRENCIES = ["USD", "RUB", "EUR"];
+const DATES = ["year", "month", "week", "day"];
+
+const props = defineProps(["index"]);
+const store = useStore();
+
+const state = reactive({
+  service: {},
+  errors: {},
+});
+
+const enabled = computed(() => {
+  /**
+   * Boolean computed field, which used as a condition
+   * for "Save" button disabled attribute
+   */
+
+  const { description, quantity, date, price, currency } = state.service;
+  const requiredSet = description && quantity && date && price && currency;
+  const hasErrors = Object.values(state.errors).some((el) => el);
+  return requiredSet && !hasErrors;
+});
+
+onMounted(() => {
+  /**
+   * Try to set the service value of the local state from the store
+   * if service with passed index exists in store
+   */
+
+  if (props.index) {
+    state.service = store.state.services.services[props.index];
+  }
+});
 </script>
 
 <template>
   <form
-    class="pt-6 pb-5 px-4 space-y-3 rounded-2.5xl text-violetgray-300 bg-violetgray-gradient"
+    class="pt-6 pb-5 px-4 space-y-3 rounded-2.5xl text-violetgray-300 bg-juicyblue-gradient"
   >
-    <div class="flex flex-col space-y-1.5 text-base">
-      <label class="text-white">Description</label>
-      <TextArea placeholder="Enter description" allow-new-lines="false" />
-    </div>
+    <FieldGroup label="Description" :error="state.errors.description">
+      <TextArea
+        name="description"
+        placeholder="Enter description"
+        v-model="state.service.description"
+        v-model:error="state.errors.description"
+        :class="state.errors.description ? '!rounded-b-none' : ''"
+        :allow-new-lines="false"
+        :required="true"
+      />
+    </FieldGroup>
 
-    <div class="flex flex-col space-y-1.5 text-base">
-      <span class="text-white">Quantity</span>
+    <FieldGroup label="Quantity" :error="state.errors.quantity">
       <div
         class="relative flex w-full bg-white rounded-2.5xl shadow-inner-violetgray"
       >
-        <input
-          type="number"
+        <IntegerField
+          name="quantity"
           class="w-full !rounded-r-none !shadow-none !bg-transparent"
           placeholder="Enter quantity"
+          v-model="state.service.quantity"
+          v-model:error="state.errors.quantity"
+          :class="state.errors.quantity ? '!rounded-b-none' : ''"
+          :required="true"
         />
         <DropdownSelect
-          :default="dates[1]"
-          :options="dates"
-          v-model="date"
-          class="right-0 bg-transparent"
           name="date"
-        ></DropdownSelect>
+          class="right-0 bg-transparent"
+          v-model="state.service.date"
+          :class="state.errors.quantity ? '!rounded-b-none' : ''"
+          :default="DATES[0]"
+          :options="DATES"
+        />
       </div>
-    </div>
+    </FieldGroup>
 
-    <div class="flex flex-col space-y-1 text-base">
-      <span class="text-white">Price</span>
+    <FieldGroup label="Price" :error="state.errors.price">
       <div
-        class="relative flex w-full bg-white rounded-2.5xl shadow-inner-violetgray"
+        class="'relative flex w-full bg-white rounded-2.5xl shadow-inner-violetgray',"
       >
-        <input
-          type="number"
+        <DecimalField
+          name="price"
           class="w-full !rounded-r-none !shadow-none !bg-transparent"
           placeholder="Enter price"
+          v-model="state.service.price"
+          v-model:error="state.errors.price"
+          :class="state.errors.price ? '!rounded-bl-none' : ''"
+          :required="true"
         />
-
         <DropdownSelect
-          :default="currencies[0]"
-          :options="currencies"
-          v-model="currency"
-          class="right-0 bg-transparent"
           name="currency"
-        ></DropdownSelect>
+          class="right-0 bg-transparent"
+          v-model="state.service.currency"
+          :class="state.errors.quantity ? '!rounded-b-none' : ''"
+          :options="CURRENCIES"
+          :default="CURRENCIES[0]"
+        />
       </div>
-    </div>
+    </FieldGroup>
 
-    <div class="flex flex-col space-y-1.5 text-base">
-      <label class="text-white">Amount</label>
-      <input type="number" placeholder="Enter amount" />
-    </div>
+    <FieldGroup label="Amount" :error="state.errors.amount">
+      <IntegerField
+        name="amount"
+        class="w-full"
+        placeholder="Enter amount"
+        v-model="state.service.amount"
+        v-model:error="state.errors.amount"
+        :class="state.errors.amount ? '!rounded-b-none' : ''"
+      />
+    </FieldGroup>
 
     <div class="flex space-x-2.5">
       <button
@@ -74,9 +128,10 @@ const date = ref(null);
         Cancel
       </button>
       <button
-        disabled
         type="button"
-        class="flex flex-1 py-3.5 justify-center border-none rounded-2.5xl text-white disabled:bg-juicygreen-50"
+        id="save-service-btn"
+        class="flex flex-1 py-3.5 justify-center border-none rounded-2.5xl text-white bg-juicygreen-100 disabled:bg-juicygreen-50"
+        :disabled="!enabled"
       >
         Save
       </button>
