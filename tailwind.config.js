@@ -22,6 +22,10 @@ module.exports = {
           50: "#B2EBD0",
           100: "#20C879",
         },
+        juicyred: {
+          50: "#EC3E3E",
+          100: "#963333",
+        },
       },
       borderRadius: {
         "2.5xl": "1.25rem", //20px
@@ -83,9 +87,9 @@ module.exports = {
     }),
     plugin(function ({ addUtilities }) {
       addUtilities({
-        ".bg-violetgray-gradient": {
+        ".bg-juicyblue-gradient": {
           background:
-            "radial-gradient(134.2% 110.5% at -9.28% -8.59%, #71A1FF 34.38%, #293CEB 93.23%)",
+            "radial-gradient(134.2% 110.5% at -15.28% -8.59%, #71A1FF 0%, #71A1FF 50.38%, #293CEB 120.23%)",
         },
       });
     }),

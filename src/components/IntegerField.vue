@@ -36,6 +36,10 @@ function onKeydown(evt) {
   }
 }
 
+function onInput() {
+  emit("update:error", null);
+}
+
 function onBlur() {
   if (props.required && !props.modelValue) {
     emit("update:error", "Field is required");
@@ -48,6 +52,7 @@ function onBlur() {
     ref="input"
     type="text"
     @keydown.exact="onKeydown"
+    @input="onInput"
     @blur="onBlur"
     v-model="innerValue"
     :class="props.class"

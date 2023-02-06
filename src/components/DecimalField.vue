@@ -111,16 +111,19 @@ function onDelete(evt) {
   }
 
   // If user trying to delete period symbol
-  if (cursorPosition === periodPosition) {
-    const position = periodPosition + 1;
-    evt.target.setSelectionRange(position, position);
-    evt.preventDefault();
-    return;
-  } else if (cursorPosition > periodPosition) {
-    const position = cursorPosition + 1;
-    evt.target.setSelectionRange(position, position);
-    evt.preventDefault();
-    return;
+  const value = evt.target.value;
+  if (/^\d*\.[0]{2}/.test(value)) {
+    if (cursorPosition === periodPosition) {
+      const position = periodPosition + 1;
+      evt.target.setSelectionRange(position, position);
+      evt.preventDefault();
+      return;
+    } else if (cursorPosition > periodPosition) {
+      const position = cursorPosition + 1;
+      evt.target.setSelectionRange(position, position);
+      evt.preventDefault();
+      return;
+    }
   }
 }
 
