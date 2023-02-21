@@ -27,8 +27,15 @@ const content = computed(() =>
 );
 
 const newLinesAllowed = computed(() =>
+  /*
+   * Boolean value which prevents or allows user
+   * break lines with Enter key press or paste method
+   */
+
   [null, undefined, true, "true"].includes(props.allowNewLines)
 );
+
+// TODO: add paste method handler to prevent user paste a text with a line break symbols
 
 function onEnter(evt) {
   if (!newLinesAllowed.value) {
@@ -37,10 +44,15 @@ function onEnter(evt) {
 }
 
 function onInput() {
-  emit("update:error", null);
+  // Reset error on user input
+  if (props.error) {
+    emit("update:error", null);
+  }
 }
 
 function onBlur() {
+  // Validate value when field losing focus
+  // Currenty validation provided only for required field
   if (props.required && !props.modelValue) {
     emit("update:error", "Field is required");
   }
