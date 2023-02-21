@@ -72,3 +72,45 @@ describe("Decimal field input test without initial state", () => {
     expect(wrapper.vm.error).not.toBeNull();
   });
 });
+
+describe("Decimal field input tests with value in initial state", () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = mount({
+      components: { DecimalField },
+      template: `<DecimalField v-model="value" v-model:error="error" :required="true" />`,
+      data: () => ({ value: 3, error: null }),
+    });
+  });
+
+  it("Up key press should set value as 4", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.up");
+    expect(wrapper.vm.value).toBe(4);
+  });
+
+  it("Down key press should set value as 2", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.down");
+    expect(wrapper.vm.value).toBe(2);
+  });
+});
+
+describe("Decimal field input tests with error in initial state", () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = mount({
+      components: { DecimalField },
+      template: `<DecimalField v-model="value" v-model:error="error" :required="true" />`,
+      data: () => ({ value: null, error: "Field required" }),
+    });
+  });
+
+  it("Input 1 for field with error should remove an error", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.find("input").setValue("1");
+    expect(wrapper.vm.error).toBeNull();
+  });
+});
