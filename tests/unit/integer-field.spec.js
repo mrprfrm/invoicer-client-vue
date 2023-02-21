@@ -35,9 +35,45 @@ describe("Integer field input tests without initial state", () => {
     await wrapper.trigger("blur");
     expect(wrapper.vm.error).not.toBeNull();
   });
+
+  it("Up key press should increment value as 1", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.up");
+    expect(wrapper.vm.value).toBe(1);
+  });
+
+  it("Down key press should set value as 0", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.down");
+    expect(wrapper.vm.value).toBe(0);
+  });
 });
 
-describe("Integer field input tests with error set in initial state", () => {
+describe("Integer field input tests with value in initial state", () => {
+  let wrapper;
+
+  beforeEach(() => {
+    wrapper = mount({
+      components: { IntegerField },
+      template: `<IntegerField v-model="value" v-model:error="error" :required="true" />`,
+      data: () => ({ value: 3, error: null }),
+    });
+  });
+
+  it("Up key press should set value as 4", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.up");
+    expect(wrapper.vm.value).toBe(4);
+  });
+
+  it("Down key press should set value as 2", async () => {
+    await wrapper.trigger("focus");
+    await wrapper.trigger("keydown.down");
+    expect(wrapper.vm.value).toBe(2);
+  });
+});
+
+describe("Integer field input tests with error in initial state", () => {
   let wrapper;
 
   beforeEach(() => {
@@ -48,7 +84,7 @@ describe("Integer field input tests with error set in initial state", () => {
     });
   });
 
-  it("Input 1 for field with error should remove an arror until blur", async () => {
+  it("Input 1 for field with error should remove an error", async () => {
     await wrapper.trigger("focus");
     await wrapper.find("input").setValue("1");
     expect(wrapper.vm.error).toBeNull();

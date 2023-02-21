@@ -1,4 +1,8 @@
 <script setup>
+/*
+ * Positive integer field
+ */
+
 import { ref, computed, defineProps, defineEmits } from "vue";
 
 const innerValue = computed({
@@ -15,7 +19,6 @@ const input = ref(null);
 const props = defineProps([
   "name",
   "modelValue",
-  "class",
   "placeholder",
   "required",
   "error",
@@ -37,12 +40,29 @@ function onKeydown(evt) {
   }
 }
 
+function onUp() {
+  emit("update:modelValue", (props.modelValue || 0) + 1);
+}
+
+function onDown() {
+  if (props.modelValue > 0) {
+    emit("update:modelValue", (props.modelValue || 0) - 1);
+  } else {
+    emit("update:modelValue", 0);
+  }
+}
+
 function onInput() {
-  emit("update:error", null);
+  // Reset error on user input
+  if (props.error) {
+    emit("update:error", null);
+  }
 }
 
 function onBlur() {
-  if (props.required && !props.modelValue) {
+  // Validate value when field losing focus
+  // Currently validation provided only for required field
+  if (props.required && !/^\d+$/.test(props.modelValue)) {
     emit("update:error", "Field is required");
   }
 }
@@ -53,11 +73,12 @@ function onBlur() {
     ref="input"
     type="text"
     @keydown.exact="onKeydown"
+    @keydown.up.prevent="onUp"
+    @keydown.down.prevent="onDown"
     @input="onInput"
     @blur="onBlur"
     v-model="innerValue"
     :name="name"
-    :class="props.class"
     :placeholder="props.placeholder"
   />
 </template>
