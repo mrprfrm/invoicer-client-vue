@@ -1,6 +1,6 @@
 <script setup>
 import { useStore } from "vuex";
-import { reactive } from "vue";
+import { reactive, computed } from "vue";
 
 import ChevronDown from "@/icons/ChevronDown.vue";
 import ChevronUp from "@/icons/ChevronUp.vue";
@@ -10,7 +10,6 @@ import DateField from "@/components/DateField.vue";
 import FlatSelect from "@/components/FlatSelect.vue";
 import ContractorModal from "@/components/ContractorModal.vue";
 import ClientModal from "@/components/ClientModal.vue";
-import ServiceCard from "@/components/ServiceCard.vue";
 import ServiceForm from "@/components/ServiceForm.vue";
 
 const store = useStore();
@@ -22,12 +21,11 @@ const state = reactive({
 const toggleClientModal = () => store.dispatch("TOGGLE_CLIENT_MODAL");
 const toggleContractorModal = () => store.dispatch("TOGGLE_CONTRACTOR_MODAL");
 
-const total = 0;
-/* const total = computed(() => */
-/*   services.value */
-/*     .filter((itm) => itm.price) */
-/*     .reduce((val, itm) => (val += itm.price), 0) */
-/* ); */
+const total = computed(() =>
+  store.state.services.services
+    .filter((itm) => itm.price)
+    .reduce((val, itm) => (val += itm.price), 0)
+);
 
 function onScroll(evt) {
   if (store.state.clients.opened || store.state.contractors.opened) {
@@ -112,12 +110,12 @@ function onScroll(evt) {
 
       <div class="flex flex-col space-y-3">
         <h2 class="text-2xl font-semibold">Goods and services</h2>
-        <ServiceCard
-          v-for="service in store.state.invoices.services"
-          :key="service.id"
-          :service="service"
-        ></ServiceCard>
-        <ServiceForm></ServiceForm>
+        <ServiceForm
+          v-for="{ service, index } in store.state.invoices.services"
+          :key="service?.id"
+          :index="index"
+        />
+        <ServiceForm v-if="store.state.services.services.length === 0" />
 
         <button
           type="button"
