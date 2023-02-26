@@ -7,7 +7,7 @@ export default {
     SET_CONTRACTORS(state, value) {
       state.contractors = value;
     },
-    SET_OPENED(state, value) {
+    SET_CONTRACTOR_OPENED(state, value) {
       state.opened = value;
     },
   },
@@ -29,11 +29,11 @@ export default {
     CLEAN_CONTRACTORS({ commit }) {
       commit("SET_CONTRACTORS", []);
     },
-    TOGGLE_OPENED({ state, commit }) {
-      commit("SET_OPENED", !state.opened);
+    TOGGLE_CONTRACTOR_DIALOG({ state, commit }) {
+      commit("SET_CONTRACTOR_OPENED", !state.opened);
     },
-    CLOSE({ commit }) {
-      commit("SET_OPENED", false);
+    CLOSE_CONTRACTOR_DIALOG({ commit }) {
+      commit("SET_CONTRACTOR_OPENED", false);
     },
   },
 };

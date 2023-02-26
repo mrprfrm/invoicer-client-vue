@@ -4,7 +4,7 @@ import TextInput from "../components/TextInput.vue";
 import TextArea from "./TextArea.vue";
 
 const store = useStore();
-const closeModal = () => store.dispatch("CLOSE_CLIENT_MODAL");
+const closeDialog = () => store.dispatch("CLOSE_CLIENT_DIALOG");
 </script>
 
 <template>
@@ -46,7 +46,7 @@ const closeModal = () => store.dispatch("CLOSE_CLIENT_MODAL");
         </div>
         <div class="flex space-x-2.5 mx-4">
           <button
-            @click="closeModal"
+            @click="closeDialog"
             type="button"
             class="py-3.5 border border-violetgray-100 flex-1 rounded-2.5xl text-violetgray-200"
           >

@@ -7,7 +7,7 @@ export default {
     SET_CLIENTS(state, value) {
       state.clients = value;
     },
-    SET_OPENED(state, value) {
+    SET_CLIENT_OPENED(state, value) {
       state.opened = value;
     },
   },
@@ -25,11 +25,11 @@ export default {
     CLEAN_CLIENTS({ commit }) {
       commit("SET_CLIENTS", []);
     },
-    TOGGLE_OPENED({ state, commit }) {
-      commit("SET_OPENED", !state.opened);
+    TOGGLE_CLIENT_DIALOG({ state, commit }) {
+      commit("SET_CLIENT_OPENED", !state.opened);
     },
-    CLOSE({ commit }) {
-      commit("SET_OPENED", false);
+    CLOSE_CLIENT_DIALOG({ commit }) {
+      commit("SET_CLIENT_OPENED", false);
     },
   },
 };

@@ -4,7 +4,7 @@ import TextInput from "../components/TextInput.vue";
 import TextArea from "../components/TextArea.vue";
 
 const store = useStore();
-const closeContractorModal = () => store.dispatch("CLOSE_CONTRACTOR_MODAL");
+const closeContractorDialog = () => store.dispatch("CLOSE_CONTRACTOR_DIALOG");
 </script>
 
 <template>
@@ -52,7 +52,7 @@ const closeContractorModal = () => store.dispatch("CLOSE_CONTRACTOR_MODAL");
         </div>
         <div class="flex space-x-2.5 mx-4">
           <button
-            @click="closeContractorModal"
+            @click="closeContractorDialog"
             type="button"
             class="py-3.5 border border-violetgray-100 flex-1 rounded-2.5xl text-violetgray-200"
           >
