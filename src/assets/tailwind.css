@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  input[type="text"],
+  input[type="number"] {
+    @apply py-5 px-4.5 shadow-inner-violetgray rounded-2.5xl border-none appearance-none moz-appearance-none placeholder:text-violetgray-100 focus:ring-1 focus:ring-juicyblue-100;
+  }
+}
+
+@font-face {
+  font-family: "inter";
+  src: url("../../public/Inter/static/Inter-Bold.ttf");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "inter";
+  src: url("../../public/Inter/static/Inter-SemiBold.ttf");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "inter";
+  src: url("../../public/Inter/static/Inter-Regular.ttf");
+  font-weight: 400;
+}

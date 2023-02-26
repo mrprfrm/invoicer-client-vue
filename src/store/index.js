@@ -1,9 +1,15 @@
 import { createStore } from "vuex";
 
+import clients from "./clients";
+import invoices from "./invoices";
+import contractors from "./contractors";
+import services from "./services";
+
 export default createStore({
-  state: {},
-  getters: {},
-  mutations: {},
-  actions: {},
-  modules: {},
+  modules: {
+    clients,
+    invoices,
+    contractors,
+    services,
+  },
 });
