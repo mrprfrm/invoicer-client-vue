@@ -1,6 +1,6 @@
 <script setup>
 import { useStore } from "vuex";
-import { computed, reactive, defineProps, onMounted } from "vue";
+import { computed, watch, reactive, defineProps } from "vue";
 
 import FieldGroup from "@/components/FieldGroup.vue";
 
@@ -21,6 +21,9 @@ const state = reactive({
   errors: {},
 });
 
+const editIndex = computed(() => store.state.services.editIndex);
+const errors = computed(() => store.state.services.errors);
+
 const enabled = computed(() => {
   /**
    * Boolean computed field, which used as a condition
@@ -33,16 +36,31 @@ const enabled = computed(() => {
   return requiredSet && !hasErrors;
 });
 
-onMounted(() => {
-  /**
-   * Try to set the service value of the local state from the store
-   * if service with passed index exists in store
-   */
-
-  if (props.index) {
-    state.service = store.state.services.services[props.index];
+watch(
+  () => editIndex.value,
+  (value) => {
+    if (value === props.index) {
+      state.service = store.getters.services.editService;
+    }
   }
-});
+);
+
+watch(
+  () => errors.value,
+  (value) => {
+    if (editIndex.value === props.index) {
+      state.errors = value;
+    }
+  }
+);
+
+function onCancel() {
+  store.dispatch("DISCARD_CHANGES", state.service);
+}
+
+function onSave() {
+  store.dispatch("SAVE_CHANGES", state.service);
+}
 </script>
 
 <template>
@@ -124,6 +142,7 @@ onMounted(() => {
       <button
         type="button"
         class="flex flex-1 py-3.5 justify-center border rounded-2.5xl border-white text-white"
+        @click="onCancel"
       >
         Cancel
       </button>
@@ -131,6 +150,7 @@ onMounted(() => {
         type="button"
         id="save-service-btn"
         class="flex flex-1 py-3.5 justify-center border-none rounded-2.5xl text-white bg-juicygreen-100 disabled:bg-juicygreen-50"
+        @click="onSave"
         :disabled="!enabled"
       >
         Save
